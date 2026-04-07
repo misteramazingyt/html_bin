@@ -1,4 +1,7 @@
-![test](https://files.catbox.moe/8ryipf.mp4)
+<video controls width="640">
+  <source src="https://files.catbox.moe/8ryipf.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
 
 ## Notes
 
