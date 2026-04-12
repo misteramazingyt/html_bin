@@ -9,6 +9,7 @@ permalink: /
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Deployed Pages</title>
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -84,10 +85,6 @@ permalink: /
         {% assign media_url = "" %}
         {% assign notes_text = "" %}
 
-        {%- comment -%}
-        Restrict extraction to content before the Notes section,
-        then grab the first link there.
-        {%- endcomment -%}
         {% assign pre_notes = p.content %}
         {% if pre_notes contains '<h2' %}
           {% assign pre_notes = pre_notes | split: '<h2' | first %}
@@ -110,28 +107,70 @@ permalink: /
           {% assign notes_text = notes_block | strip_html | strip | newline_to_br %}
         {% endif %}
 
-        {% assign media_down = media_url | downcase %}
+        {% assign media_raw = media_url | strip %}
+        {% assign media_down = media_raw | downcase %}
+
+        {%- comment -%}
+        Rewrite non-raw imgur page URLs into direct raw asset URLs.
+        This assumes .jpg when the source is just imgur.com/<id>.
+        For perfect accuracy, your pipeline should store the raw URL directly.
+        {%- endcomment -%}
+        {% if media_down contains "imgur.com/" and media_down contains "i.imgur.com/" == false %}
+          {% assign imgur_id = media_raw
+            | replace: "https://imgur.com/", ""
+            | replace: "http://imgur.com/", ""
+            | replace: "https://www.imgur.com/", ""
+            | replace: "http://www.imgur.com/", ""
+            | replace: "/gallery/", ""
+            | replace: "/a/", ""
+            | split: "?" | first
+            | split: "#" | first
+            | split: "/" | first
+          %}
+
+          {% if imgur_id != "" %}
+            {% assign media_raw = "https://i.imgur.com/" | append: imgur_id | append: ".jpg" %}
+            {% assign media_down = media_raw | downcase %}
+          {% endif %}
+        {% endif %}
 
         <tr>
           <td>{{ p.title }}</td>
 
           <td class="media-cell">
-            {% if media_url != "" %}
-              {% if media_down contains "buzzheavier.com" %}
-                <a href="{{ media_url }}">Download media</a>
+            {% if media_raw != "" %}
+              {% assign is_buzzheavier = false %}
+              {% assign is_image = false %}
+              {% assign is_video = false %}
 
-              {% elsif media_down contains ".jpg" or media_down contains ".jpeg" or media_down contains ".png" or media_down contains ".gif" or media_down contains ".webp" or media_down contains ".avif" %}
-                <a href="{{ media_url }}">
-                  <img src="{{ media_url }}" alt="{{ p.title | escape }}">
+              {% if media_down contains "buzzheavier.com" %}
+                {% assign is_buzzheavier = true %}
+              {% endif %}
+
+              {% if media_down contains ".jpg" or media_down contains ".jpeg" or media_down contains ".png" or media_down contains ".gif" or media_down contains ".webp" or media_down contains ".avif" %}
+                {% assign is_image = true %}
+              {% endif %}
+
+              {% if media_down contains ".mp4" or media_down contains ".webm" or media_down contains ".mov" or media_down contains ".m4v" %}
+                {% assign is_video = true %}
+              {% endif %}
+
+              {% if is_buzzheavier %}
+                <a href="{{ media_raw }}" target="_blank">Download media</a>
+
+              {% elsif is_image %}
+                <a href="{{ media_raw }}" target="_blank">
+                  <img src="{{ media_raw }}" alt="{{ p.title | escape }}">
                 </a>
 
-              {% elsif media_down contains ".mp4" or media_down contains ".webm" or media_down contains ".mov" or media_down contains ".m4v" %}
+              {% elsif is_video %}
                 <video controls preload="metadata">
-                  <source src="{{ media_url }}">
+                  <source src="{{ media_raw }}">
+                  Your browser does not support video playback.
                 </video>
 
               {% else %}
-                <a href="{{ media_url }}">Open media link</a>
+                <a href="{{ media_raw }}" target="_blank">Open media link</a>
               {% endif %}
             {% endif %}
           </td>
