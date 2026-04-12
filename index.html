@@ -12,7 +12,7 @@ permalink: /
   <style>
     body {
       font-family: Arial, sans-serif;
-      max-width: 1200px;
+      max-width: 1400px;
       margin: 40px auto;
       padding: 0 20px;
       line-height: 1.5;
@@ -41,11 +41,19 @@ permalink: /
     }
 
     td:nth-child(1) { width: 22%; }
-    td:nth-child(2) { width: 18%; }
-    td:nth-child(3) { width: 40%; }
+    td:nth-child(2) { width: 22%; }
+    td:nth-child(3) { width: 36%; }
     td:nth-child(4) { width: 20%; }
 
-    a {
+    img.media-thumb,
+    video.media-thumb {
+      max-height: 200px;
+      max-width: 100%;
+      display: block;
+    }
+
+    .media-fallback a,
+    .page-link a {
       word-break: break-word;
     }
   </style>
@@ -57,7 +65,7 @@ permalink: /
     <thead>
       <tr>
         <th>Title</th>
-        <th>Media Link</th>
+        <th>Media</th>
         <th>Notes</th>
         <th>Page Link</th>
       </tr>
@@ -91,17 +99,42 @@ permalink: /
           {% assign notes_text = notes_block | strip_html | strip | newline_to_br %}
         {% endif %}
 
+        {% assign media_down = media_url | downcase %}
+
         <tr>
           <td>{{ p.title }}</td>
+
           <td>
             {% if media_url != "" %}
-              <a href="{{ media_url }}">Media</a>
+              {% if media_down contains "buzzheavier.com" %}
+                <div class="media-fallback">
+                  <a href="{{ media_url }}">Download media</a>
+                </div>
+
+              {% elsif media_down contains ".jpg" or media_down contains ".jpeg" or media_down contains ".png" or media_down contains ".gif" or media_down contains ".webp" %}
+                <a href="{{ media_url }}">
+                  <img class="media-thumb" src="{{ media_url }}" alt="{{ p.title | escape }}">
+                </a>
+
+              {% elsif media_down contains ".mp4" or media_down contains ".webm" or media_down contains ".mov" or media_down contains ".m4v" %}
+                <video class="media-thumb" controls preload="metadata">
+                  <source src="{{ media_url }}">
+                  Your browser does not support video playback.
+                </video>
+
+              {% else %}
+                <div class="media-fallback">
+                  <a href="{{ media_url }}">Open media link</a>
+                </div>
+              {% endif %}
             {% endif %}
           </td>
+
           <td>{{ notes_text }}</td>
-          <td>
+
+          <td class="page-link">
             <a href="https://misteramazingyt.github.io/html_bin{{ p.permalink | default: p.url }}">
-              Page
+              {{ p.permalink | default: p.url }}
             </a>
           </td>
         </tr>
