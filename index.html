@@ -9,7 +9,6 @@ permalink: /
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Deployed Pages</title>
-
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -49,14 +48,14 @@ permalink: /
     .media-cell img,
     .media-cell video {
       display: block;
+      max-width: 200px;
       max-height: 200px;
-      max-width: 100%;
       width: auto;
       height: auto;
     }
 
-    .media-cell a,
-    .page-link a {
+    .page-link a,
+    .media-cell a {
       word-break: break-word;
     }
   </style>
@@ -82,16 +81,30 @@ permalink: /
       %}
 
       {% for p in note_pages %}
-        {% assign media_url = "" %}
         {% assign notes_text = "" %}
+        {% assign media_kind = "" %}
+        {% assign media_raw = "" %}
 
         {% assign pre_notes = p.content %}
         {% if pre_notes contains '<h2' %}
           {% assign pre_notes = pre_notes | split: '<h2' | first %}
         {% endif %}
 
-        {% if pre_notes contains '<a href="' %}
-          {% assign media_url = pre_notes | split: '<a href="' | last | split: '"' | first %}
+        {% if pre_notes contains '<img ' and pre_notes contains 'src="' %}
+          {% assign media_kind = "image" %}
+          {% assign media_raw = pre_notes | split: 'src="' | last | split: '"' | first %}
+
+        {% elsif pre_notes contains '<source ' and pre_notes contains 'src="' %}
+          {% assign media_kind = "video" %}
+          {% assign media_raw = pre_notes | split: 'src="' | last | split: '"' | first %}
+
+        {% elsif pre_notes contains '<video ' and pre_notes contains 'src="' %}
+          {% assign media_kind = "video" %}
+          {% assign media_raw = pre_notes | split: 'src="' | last | split: '"' | first %}
+
+        {% elsif pre_notes contains '<a href="' %}
+          {% assign media_kind = "link" %}
+          {% assign media_raw = pre_notes | split: '<a href="' | last | split: '"' | first %}
         {% endif %}
 
         {% if p.content contains '<h2' %}
@@ -107,64 +120,30 @@ permalink: /
           {% assign notes_text = notes_block | strip_html | strip | newline_to_br %}
         {% endif %}
 
-        {% assign media_raw = media_url | strip %}
         {% assign media_down = media_raw | downcase %}
-
-        {%- comment -%}
-        Rewrite non-raw imgur page URLs into direct raw asset URLs.
-        This assumes .jpg when the source is just imgur.com/<id>.
-        For perfect accuracy, your pipeline should store the raw URL directly.
-        {%- endcomment -%}
-        {% if media_down contains "imgur.com/" and media_down contains "i.imgur.com/" == false %}
-          {% assign imgur_id = media_raw
-            | replace: "https://imgur.com/", ""
-            | replace: "http://imgur.com/", ""
-            | replace: "https://www.imgur.com/", ""
-            | replace: "http://www.imgur.com/", ""
-            | replace: "/gallery/", ""
-            | replace: "/a/", ""
-            | split: "?" | first
-            | split: "#" | first
-            | split: "/" | first
-          %}
-
-          {% if imgur_id != "" %}
-            {% assign media_raw = "https://i.imgur.com/" | append: imgur_id | append: ".jpg" %}
-            {% assign media_down = media_raw | downcase %}
-          {% endif %}
-        {% endif %}
 
         <tr>
           <td>{{ p.title }}</td>
 
           <td class="media-cell">
             {% if media_raw != "" %}
-              {% assign is_buzzheavier = false %}
-              {% assign is_image = false %}
-              {% assign is_video = false %}
+              {% if media_kind == "image" %}
+                <img src="{{ media_raw }}" alt="{{ p.title | escape }}" width="200">
 
-              {% if media_down contains "buzzheavier.com" %}
-                {% assign is_buzzheavier = true %}
-              {% endif %}
+              {% elsif media_kind == "video" %}
+                <video controls preload="metadata" width="200">
+                  <source src="{{ media_raw }}">
+                  Your browser does not support video playback.
+                </video>
 
-              {% if media_down contains ".jpg" or media_down contains ".jpeg" or media_down contains ".png" or media_down contains ".gif" or media_down contains ".webp" or media_down contains ".avif" %}
-                {% assign is_image = true %}
-              {% endif %}
-
-              {% if media_down contains ".mp4" or media_down contains ".webm" or media_down contains ".mov" or media_down contains ".m4v" %}
-                {% assign is_video = true %}
-              {% endif %}
-
-              {% if is_buzzheavier %}
+              {% elsif media_down contains "buzzheavier.com" %}
                 <a href="{{ media_raw }}" target="_blank">Download media</a>
 
-              {% elsif is_image %}
-                <a href="{{ media_raw }}" target="_blank">
-                  <img src="{{ media_raw }}" alt="{{ p.title | escape }}">
-                </a>
+              {% elsif media_down contains ".jpg" or media_down contains ".jpeg" or media_down contains ".png" or media_down contains ".gif" or media_down contains ".webp" or media_down contains ".avif" %}
+                <img src="{{ media_raw }}" alt="{{ p.title | escape }}" width="200">
 
-              {% elsif is_video %}
-                <video controls preload="metadata">
+              {% elsif media_down contains ".mp4" or media_down contains ".webm" or media_down contains ".mov" or media_down contains ".m4v" %}
+                <video controls preload="metadata" width="200">
                   <source src="{{ media_raw }}">
                   Your browser does not support video playback.
                 </video>
