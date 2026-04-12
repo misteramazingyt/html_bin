@@ -9,6 +9,7 @@ permalink: /
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Deployed Pages</title>
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -58,8 +59,20 @@ permalink: /
     .media-cell a {
       word-break: break-word;
     }
+
+    /* Make title look clean but clickable */
+    td:first-child a {
+      color: inherit;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    td:first-child a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
+
 <body>
   <h1>Deployed Pages</h1>
 
@@ -72,6 +85,7 @@ permalink: /
         <th>Page Link</th>
       </tr>
     </thead>
+
     <tbody>
       {% assign note_pages = site.pages
         | where_exp: "p", "p.url != '/'"
@@ -123,7 +137,11 @@ permalink: /
         {% assign media_down = media_raw | downcase %}
 
         <tr>
-          <td>{{ p.title }}</td>
+          <td>
+            <a href="https://misteramazingyt.github.io/html_bin{{ p.permalink | default: p.url }}">
+              {{ p.title }}
+            </a>
+          </td>
 
           <td class="media-cell">
             {% if media_raw != "" %}
@@ -133,7 +151,6 @@ permalink: /
               {% elsif media_kind == "video" %}
                 <video controls preload="metadata" width="200">
                   <source src="{{ media_raw }}">
-                  Your browser does not support video playback.
                 </video>
 
               {% elsif media_down contains "buzzheavier.com" %}
@@ -145,7 +162,6 @@ permalink: /
               {% elsif media_down contains ".mp4" or media_down contains ".webm" or media_down contains ".mov" or media_down contains ".m4v" %}
                 <video controls preload="metadata" width="200">
                   <source src="{{ media_raw }}">
-                  Your browser does not support video playback.
                 </video>
 
               {% else %}
