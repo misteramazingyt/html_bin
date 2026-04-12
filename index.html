@@ -8,18 +8,18 @@ permalink: /
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ site.github.repository_name | default: "html_bin" }}</title>
+  <title>Deployed Pages</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      max-width: 1400px;
-      margin: 40px auto;
+      max-width: 1500px;
+      margin: 20px auto;
       padding: 0 20px;
-      line-height: 1.5;
+      line-height: 1.4;
     }
 
     h1 {
-      margin-bottom: 1rem;
+      margin-bottom: 16px;
     }
 
     table {
@@ -37,22 +37,24 @@ permalink: /
     }
 
     th {
-      background: #f5f5f5;
+      background: #f3f3f3;
     }
 
-    td:nth-child(1) { width: 22%; }
-    td:nth-child(2) { width: 22%; }
-    td:nth-child(3) { width: 36%; }
-    td:nth-child(4) { width: 20%; }
+    td:nth-child(1) { width: 24%; }
+    td:nth-child(2) { width: 24%; }
+    td:nth-child(3) { width: 26%; }
+    td:nth-child(4) { width: 26%; }
 
-    img.media-thumb,
-    video.media-thumb {
+    .media-cell img,
+    .media-cell video {
+      display: block;
       max-height: 200px;
       max-width: 100%;
-      display: block;
+      width: auto;
+      height: auto;
     }
 
-    .media-fallback a,
+    .media-cell a,
     .page-link a {
       word-break: break-word;
     }
@@ -82,8 +84,17 @@ permalink: /
         {% assign media_url = "" %}
         {% assign notes_text = "" %}
 
-        {% if p.content contains '<a href="' %}
-          {% assign media_url = p.content | split: '<a href="' | last | split: '"' | first %}
+        {%- comment -%}
+        Restrict extraction to content before the Notes section,
+        then grab the first link there.
+        {%- endcomment -%}
+        {% assign pre_notes = p.content %}
+        {% if pre_notes contains '<h2' %}
+          {% assign pre_notes = pre_notes | split: '<h2' | first %}
+        {% endif %}
+
+        {% if pre_notes contains '<a href="' %}
+          {% assign media_url = pre_notes | split: '<a href="' | last | split: '"' | first %}
         {% endif %}
 
         {% if p.content contains '<h2' %}
@@ -104,28 +115,23 @@ permalink: /
         <tr>
           <td>{{ p.title }}</td>
 
-          <td>
+          <td class="media-cell">
             {% if media_url != "" %}
               {% if media_down contains "buzzheavier.com" %}
-                <div class="media-fallback">
-                  <a href="{{ media_url }}">Download media</a>
-                </div>
+                <a href="{{ media_url }}">Download media</a>
 
-              {% elsif media_down contains ".jpg" or media_down contains ".jpeg" or media_down contains ".png" or media_down contains ".gif" or media_down contains ".webp" %}
+              {% elsif media_down contains ".jpg" or media_down contains ".jpeg" or media_down contains ".png" or media_down contains ".gif" or media_down contains ".webp" or media_down contains ".avif" %}
                 <a href="{{ media_url }}">
-                  <img class="media-thumb" src="{{ media_url }}" alt="{{ p.title | escape }}">
+                  <img src="{{ media_url }}" alt="{{ p.title | escape }}">
                 </a>
 
               {% elsif media_down contains ".mp4" or media_down contains ".webm" or media_down contains ".mov" or media_down contains ".m4v" %}
-                <video class="media-thumb" controls preload="metadata">
+                <video controls preload="metadata">
                   <source src="{{ media_url }}">
-                  Your browser does not support video playback.
                 </video>
 
               {% else %}
-                <div class="media-fallback">
-                  <a href="{{ media_url }}">Open media link</a>
-                </div>
+                <a href="{{ media_url }}">Open media link</a>
               {% endif %}
             {% endif %}
           </td>
