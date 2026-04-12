@@ -13,7 +13,7 @@ permalink: /
   <style>
     body {
       font-family: Arial, sans-serif;
-      max-width: 1500px;
+      max-width: 1400px;
       margin: 20px auto;
       padding: 0 20px;
       line-height: 1.4;
@@ -41,10 +41,10 @@ permalink: /
       background: #f3f3f3;
     }
 
-    td:nth-child(1) { width: 24%; }
-    td:nth-child(2) { width: 24%; }
-    td:nth-child(3) { width: 26%; }
-    td:nth-child(4) { width: 26%; }
+    /* Rebalanced widths after removing column */
+    td:nth-child(1) { width: 30%; }
+    td:nth-child(2) { width: 30%; }
+    td:nth-child(3) { width: 40%; }
 
     .media-cell img,
     .media-cell video {
@@ -55,12 +55,11 @@ permalink: /
       height: auto;
     }
 
-    .page-link a,
     .media-cell a {
       word-break: break-word;
     }
 
-    /* Make title look clean but clickable */
+    /* Title link styling */
     td:first-child a {
       color: inherit;
       text-decoration: none;
@@ -82,7 +81,6 @@ permalink: /
         <th>Title</th>
         <th>Media</th>
         <th>Notes</th>
-        <th>Page Link</th>
       </tr>
     </thead>
 
@@ -171,12 +169,6 @@ permalink: /
           </td>
 
           <td>{{ notes_text }}</td>
-
-          <td class="page-link">
-            <a href="https://misteramazingyt.github.io/html_bin{{ p.permalink | default: p.url }}">
-              {{ p.permalink | default: p.url }}
-            </a>
-          </td>
         </tr>
       {% endfor %}
     </tbody>
