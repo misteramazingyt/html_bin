@@ -1,0 +1,21 @@
+<dialog id="token-dialog">
+  <h2>GitHub token</h2>
+  <p>
+    Notes live in the markdown source, so saving one commits to
+    <code>{{ site.repository }}</code>. Paste a <strong>fine-grained</strong> personal access
+    token limited to that single repository with <code>Contents: Read and write</code>.
+  </p>
+  <p>
+    It is kept in this browser's <code>localStorage</code> and sent only to
+    <code>api.github.com</code>. Anyone with access to this browser profile can read it —
+    don't set it on a shared machine.
+  </p>
+  <form method="dialog">
+    <input id="token-input" type="password" placeholder="github_pat_…" autocomplete="off" spellcheck="false">
+    <div class="dialog-actions">
+      <button class="btn" id="token-clear" type="button">Clear</button>
+      <button class="btn" type="submit" value="cancel">Cancel</button>
+      <button class="btn btn-primary" id="token-save" type="button">Save</button>
+    </div>
+  </form>
+</dialog>

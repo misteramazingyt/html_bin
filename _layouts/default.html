@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" data-repo="{{ site.repository }}" data-branch="main">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ page.title | default: site.title }} · html_bin</title>
+  <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='13' font-size='13'>🗃️</text></svg>">
+</head>
+<body>
+
+{% include masthead.html %}
+
+{%- comment -%}
+  Pages are machine-generated with a fixed shape, so the source is parsed into
+  media / notes / footnote instead of dumping `content` — that separation is
+  what lets the notes be edited on their own. Jekyll hands `page.content` over
+  as raw markdown in some contexts and as rendered HTML in others, so both
+  shapes are handled rather than betting on one.
+{%- endcomment -%}
+
+{% assign raw = page.content %}
+{% assign is_html = false %}
+{% if raw contains '<h2' %}{% assign is_html = true %}{% endif %}
+
+{% if is_html %}
+  {% assign pre = raw | split: '<h2' | first %}
+{% else %}
+  {% assign pre = raw | split: '## Notes' | first %}
+{% endif %}
+
+{% assign media_url = '' %}
+{% assign media_kind = '' %}
+{% if pre contains 'src="' %}
+  {% assign media_url = pre | split: 'src="' | last | split: '"' | first %}
+  {% if pre contains '<video' %}
+    {% assign media_kind = 'video' %}
+  {% else %}
+    {% assign media_kind = 'image' %}
+  {% endif %}
+{% endif %}
+
+{% assign notes_text = '' %}
+{% if is_html %}
+  {% if raw contains '</h2>' %}
+    {% assign after = raw | split: '</h2>' | last %}
+    {% if after contains '<hr' %}
+      {% assign after = after | split: '<hr' | first %}
+    {% elsif after contains 'class="footnotes"' %}
+      {% assign after = after | split: '<div class="footnotes"' | first %}
+    {% endif %}
+    {% assign notes_text = after | strip_html | strip %}
+  {% endif %}
+{% else %}
+  {% if raw contains '## Notes' %}
+    {% assign after = raw | split: '## Notes' | last | remove_first: ' [^1]' %}
+    {% assign notes_text = after | split: '
+---' | first | strip %}
+  {% endif %}
+{% endif %}
+
+{% assign source_url = '' %}
+{% if is_html %}
+  {% if raw contains 'class="footnotes"' %}
+    {% assign source_url = raw | split: 'class="footnotes"' | last | strip_html | replace: '↩', '' | strip %}
+  {% endif %}
+{% else %}
+  {% if raw contains '[^1]: ' %}
+    {% assign source_url = raw | split: '[^1]: ' | last | strip %}
+  {% endif %}
+{% endif %}
+
+<main class="page" data-path="{{ page.path }}">
+  <h1>{{ page.title }}</h1>
+
+  {% if media_url != '' %}
+    <div class="page-media">
+      {% if media_kind == 'video' %}
+        <video controls preload="metadata"><source src="{{ media_url }}"></video>
+      {% else %}
+        <img src="{{ media_url }}" alt="{{ page.title | escape }}" loading="lazy">
+      {% endif %}
+    </div>
+  {% endif %}
+
+  <h2>Notes</h2>
+  <div class="notes">{{ notes_text }}</div>
+
+  <div class="editor">
+    <textarea aria-label="Notes" placeholder="Write notes… (markdown allowed)"></textarea>
+    <div class="editor-row">
+      <button class="btn btn-primary btn-sm js-save" type="button">Save</button>
+      <button class="btn btn-sm js-cancel" type="button">Cancel</button>
+      <span class="status"></span>
+    </div>
+  </div>
+
+  <div class="editor-row" style="margin-top:10px">
+    <button class="btn btn-sm js-edit" type="button">Edit notes</button>
+  </div>
+
+  {% if source_url != '' %}
+    <h2>Source</h2>
+    <div class="footnotes"><a href="{{ source_url }}" target="_blank" rel="noopener">{{ source_url }}</a></div>
+  {% endif %}
+
+  <a class="backlink" href="{{ '/' | relative_url }}">← all pages</a>
+</main>
+
+{% include token-dialog.html %}
+<script src="{{ '/assets/js/app.js' | relative_url }}"></script>
+</body>
+</html>

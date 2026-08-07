@@ -2,176 +2,130 @@
 layout: null
 permalink: /
 ---
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-repo="{{ site.repository }}" data-branch="main">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Deployed Pages</title>
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 1400px;
-      margin: 20px auto;
-      padding: 0 20px;
-      line-height: 1.4;
-    }
-
-    h1 {
-      margin-bottom: 16px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      table-layout: fixed;
-    }
-
-    th, td {
-      border: 1px solid #ccc;
-      padding: 10px;
-      text-align: left;
-      vertical-align: top;
-      word-wrap: break-word;
-    }
-
-    th {
-      background: #f3f3f3;
-    }
-
-    /* Rebalanced widths after removing column */
-    td:nth-child(1) { width: 30%; }
-    td:nth-child(2) { width: 30%; }
-    td:nth-child(3) { width: 40%; }
-
-    .media-cell img,
-    .media-cell video {
-      display: block;
-      max-width: 200px;
-      max-height: 200px;
-      width: auto;
-      height: auto;
-    }
-
-    .media-cell a {
-      word-break: break-word;
-    }
-
-    /* Title link styling */
-    td:first-child a {
-      color: inherit;
-      text-decoration: none;
-      font-weight: 500;
-    }
-
-    td:first-child a:hover {
-      text-decoration: underline;
-    }
-  </style>
+  <title>html_bin</title>
+  <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='13' font-size='13'>🗃️</text></svg>">
 </head>
-
 <body>
-  <h1>Deployed Pages</h1>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Title</th>
-        <th>Media</th>
-        <th>Notes</th>
-      </tr>
-    </thead>
+{% assign note_pages = site.pages
+   | where_exp: "p", "p.url != '/'"
+   | where_exp: "p", "p.title"
+   | sort: "name"
+   | reverse %}
 
-    <tbody>
-      {% assign note_pages = site.pages
-        | where_exp: "p", "p.url != '/'"
-        | where_exp: "p", "p.title"
-        | sort: "name"
-        | reverse
-      %}
+{% include masthead.html show_search=true count=note_pages.size %}
 
-      {% for p in note_pages %}
-        {% assign notes_text = "" %}
-        {% assign media_kind = "" %}
-        {% assign media_raw = "" %}
+<div class="wrap">
+  <div class="grid">
+  {% for p in note_pages %}
 
-        {% assign pre_notes = p.content %}
-        {% if pre_notes contains '<h2' %}
-          {% assign pre_notes = pre_notes | split: '<h2' | first %}
+    {%- comment -%}
+      Same dual-shape parsing as the page layout: `p.content` arrives as raw
+      markdown or as rendered HTML depending on build order, so key off
+      whichever markers are actually present.
+    {%- endcomment -%}
+
+    {% assign raw = p.content %}
+    {% assign is_html = false %}
+    {% if raw contains '<h2' %}{% assign is_html = true %}{% endif %}
+
+    {% if is_html %}
+      {% assign pre = raw | split: '<h2' | first %}
+    {% else %}
+      {% assign pre = raw | split: '## Notes' | first %}
+    {% endif %}
+
+    {% assign media_url = '' %}
+    {% assign media_kind = '' %}
+    {% if pre contains 'src="' %}
+      {% assign media_url = pre | split: 'src="' | last | split: '"' | first %}
+      {% if pre contains '<video' %}
+        {% assign media_kind = 'video' %}
+      {% else %}
+        {% assign media_kind = 'image' %}
+      {% endif %}
+    {% endif %}
+
+    {% assign notes_text = '' %}
+    {% if is_html %}
+      {% if raw contains '</h2>' %}
+        {% assign after = raw | split: '</h2>' | last %}
+        {% if after contains '<hr' %}
+          {% assign after = after | split: '<hr' | first %}
+        {% elsif after contains 'class="footnotes"' %}
+          {% assign after = after | split: '<div class="footnotes"' | first %}
         {% endif %}
+        {% assign notes_text = after | strip_html | strip %}
+      {% endif %}
+    {% else %}
+      {% if raw contains '## Notes' %}
+        {% assign after = raw | split: '## Notes' | last | remove_first: ' [^1]' %}
+        {% assign notes_text = after | split: '
+---' | first | strip %}
+      {% endif %}
+    {% endif %}
 
-        {% if pre_notes contains '<img ' and pre_notes contains 'src="' %}
-          {% assign media_kind = "image" %}
-          {% assign media_raw = pre_notes | split: 'src="' | last | split: '"' | first %}
+    {% assign stamp = p.name | split: '_' | first %}
+    {% assign yr = stamp | slice: 0, 4 %}
+    {% assign mo = stamp | slice: 4, 2 %}
+    {% assign dy = stamp | slice: 6, 2 %}
 
-        {% elsif pre_notes contains '<source ' and pre_notes contains 'src="' %}
-          {% assign media_kind = "video" %}
-          {% assign media_raw = pre_notes | split: 'src="' | last | split: '"' | first %}
-
-        {% elsif pre_notes contains '<video ' and pre_notes contains 'src="' %}
-          {% assign media_kind = "video" %}
-          {% assign media_raw = pre_notes | split: 'src="' | last | split: '"' | first %}
-
-        {% elsif pre_notes contains '<a href="' %}
-          {% assign media_kind = "link" %}
-          {% assign media_raw = pre_notes | split: '<a href="' | last | split: '"' | first %}
-        {% endif %}
-
-        {% if p.content contains '<h2' %}
-          {% assign after_h2 = p.content | split: '<h2' | last %}
-          {% assign after_h2_close = after_h2 | split: '</h2>' | last %}
-
-          {% if after_h2_close contains '<hr' %}
-            {% assign notes_block = after_h2_close | split: '<hr' | first %}
+    <article class="card" data-path="{{ p.path }}"
+             data-search="{{ p.title | downcase | escape }} {{ notes_text | downcase | escape }}">
+      <div class="card-media">
+        {% if media_url != '' %}
+          {% if media_kind == 'video' %}
+            <video controls preload="metadata"><source src="{{ media_url }}"></video>
           {% else %}
-            {% assign notes_block = after_h2_close %}
+            <img src="{{ media_url }}" alt="{{ p.title | escape }}" loading="lazy">
           {% endif %}
-
-          {% assign notes_text = notes_block | strip_html | strip | newline_to_br %}
+        {% else %}
+          <div class="missing">No media</div>
         {% endif %}
+      </div>
 
-        {% assign media_down = media_raw | downcase %}
+      <div class="card-body">
+        <h2 class="card-title">
+          <a href="{{ p.permalink | default: p.url | relative_url }}">{{ p.title }}</a>
+        </h2>
 
-        <tr>
-          <td>
-            <a href="https://misteramazingyt.github.io/html_bin{{ p.permalink | default: p.url }}">
-              {{ p.title }}
-            </a>
-          </td>
+        <div class="card-meta">
+          {% if yr != '' %}<span>{{ yr }}-{{ mo }}-{{ dy }}</span>{% endif %}
+          {% if media_kind != '' %}<span class="tag">{{ media_kind }}</span>{% endif %}
+        </div>
 
-          <td class="media-cell">
-            {% if media_raw != "" %}
-              {% if media_kind == "image" %}
-                <img src="{{ media_raw }}" alt="{{ p.title | escape }}" width="200">
+        <p class="notes">{{ notes_text }}</p>
 
-              {% elsif media_kind == "video" %}
-                <video controls preload="metadata" width="200">
-                  <source src="{{ media_raw }}">
-                </video>
+        <div class="editor">
+          <textarea aria-label="Notes" placeholder="Write notes… (markdown allowed)"></textarea>
+          <div class="editor-row">
+            <button class="btn btn-primary btn-sm js-save" type="button">Save</button>
+            <button class="btn btn-sm js-cancel" type="button">Cancel</button>
+          </div>
+        </div>
 
-              {% elsif media_down contains "buzzheavier.com" %}
-                <a href="{{ media_raw }}" target="_blank">Download media</a>
+        <div class="card-actions">
+          <button class="btn btn-sm js-edit" type="button">Edit notes</button>
+          <span class="status"></span>
+        </div>
+      </div>
+    </article>
 
-              {% elsif media_down contains ".jpg" or media_down contains ".jpeg" or media_down contains ".png" or media_down contains ".gif" or media_down contains ".webp" or media_down contains ".avif" %}
-                <img src="{{ media_raw }}" alt="{{ p.title | escape }}" width="200">
+  {% endfor %}
+  </div>
 
-              {% elsif media_down contains ".mp4" or media_down contains ".webm" or media_down contains ".mov" or media_down contains ".m4v" %}
-                <video controls preload="metadata" width="200">
-                  <source src="{{ media_raw }}">
-                </video>
+  {% if note_pages.size == 0 %}
+    <div class="empty">Nothing here yet.</div>
+  {% endif %}
+</div>
 
-              {% else %}
-                <a href="{{ media_raw }}" target="_blank">Open media link</a>
-              {% endif %}
-            {% endif %}
-          </td>
-
-          <td>{{ notes_text }}</td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+{% include token-dialog.html %}
+<script src="{{ '/assets/js/app.js' | relative_url }}"></script>
 </body>
 </html>

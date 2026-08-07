@@ -1,0 +1,13 @@
+<header class="masthead">
+  <div class="masthead-inner">
+    <a class="brand" href="{{ '/' | relative_url }}">html<span>_</span>bin</a>
+    {% if include.show_search %}
+      <span class="count" id="count">{{ include.count }} pages</span>
+      <input class="search" id="search" type="search" placeholder="Search titles and notes…" autocomplete="off">
+    {% else %}
+      <span class="spacer"></span>
+    {% endif %}
+    <button class="btn" id="theme-toggle" title="Toggle light / dark" aria-label="Toggle light or dark theme">◐</button>
+    <button class="btn" id="token-btn" title="Set the GitHub token used to save notes">Token</button>
+  </div>
+</header>

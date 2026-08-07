@@ -1,15 +1,29 @@
+title: html_bin
+description: A running archive of saved media, with notes.
+repository: misteramazingyt/html_bin
+
 plugins:
   - jekyll-relative-links
+
 relative_links:
   enabled: true
   collections: true
+
+# Every note page gets the custom layout; index.html opts out with `layout: null`.
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
+
 include:
   - CONTRIBUTING.md
   - README.md
   - LICENSE.md
   - COPYING.md
   - CODE_OF_CONDUCT.md
-  - CONTRIBUTING.md
   - ISSUE_TEMPLATE.md
   - PULL_REQUEST_TEMPLATE.md
-theme: jekyll-theme-minimal
+
+exclude:
+  - html1.html
