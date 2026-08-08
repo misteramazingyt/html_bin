@@ -1,6 +1,7 @@
 ---
 title: Doctor Diagnoses Normal Reactions, Prescribes Lifetime Drugs
 permalink: /202604210302_doctor_diagnoses_normal_reactions_prescribes_lifetime_drugs/
+tags: [Memetic Knowledge, Societal Critique, Medical Industrial Complex, Mental Health]
 ---
 
 # Doctor Diagnoses Normal Reactions, Prescribes Lifetime Drugs

@@ -1,6 +1,7 @@
 ---
 title: Political And Economic Terminology Overload Meme
 permalink: /202606261740_political_and_economic_terminology_overload_meme/
+tags: [Economics, Memetic Knowledge, Feeling Overwhelmed, Societal Critique]
 ---
 
 # Political And Economic Terminology Overload Meme

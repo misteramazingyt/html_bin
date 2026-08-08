@@ -1,6 +1,7 @@
 ---
 title: Intellectualism Over Work, Observed by Parents
 permalink: /202606210042_intellectualism_over_work_observed_by_parents/
+tags: [Memetic Knowledge, Intellectual History, Societal Critique, Intergenerational Conflict]
 ---
 
 # Intellectualism Over Work, Observed by Parents

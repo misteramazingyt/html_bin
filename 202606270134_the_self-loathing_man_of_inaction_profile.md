@@ -1,6 +1,7 @@
 ---
 title: The Self-Loathing Man Of Inaction Profile
 permalink: /202606270134_the_self-loathing_man_of_inaction_profile/
+tags: [Mental Health, Feeling Overwhelmed, Existentialism, Memetic Knowledge]
 ---
 
 # The Self-Loathing Man Of Inaction Profile

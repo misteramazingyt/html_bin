@@ -78,7 +78,7 @@ permalink: /
     {% assign dy = stamp | slice: 6, 2 %}
 
     <article class="card" data-path="{{ p.path }}"
-             data-search="{{ p.title | downcase | escape }} {{ notes_text | downcase | escape }}">
+             data-search="{{ p.title | downcase | escape }} {{ notes_text | downcase | escape }} {{ p.tags | join: ' ' | downcase | escape }}">
       <div class="card-media">
         {% if media_url != '' %}
           {% if media_kind == 'video' %}
@@ -100,6 +100,12 @@ permalink: /
           {% if yr != '' %}<span>{{ yr }}-{{ mo }}-{{ dy }}</span>{% endif %}
           {% if media_kind != '' %}<span class="tag">{{ media_kind }}</span>{% endif %}
         </div>
+
+        {% if p.tags and p.tags.size > 0 %}
+          <div class="tag-row">
+            {% for t in p.tags %}<span class="tag tag-topic">{{ t }}</span>{% endfor %}
+          </div>
+        {% endif %}
 
         <p class="notes">{{ notes_text }}</p>
 

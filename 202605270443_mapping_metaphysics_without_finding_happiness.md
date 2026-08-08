@@ -1,6 +1,7 @@
 ---
 title: Mapping Metaphysics Without Finding Happiness
 permalink: /202605270443_mapping_metaphysics_without_finding_happiness/
+tags: [Memetic Knowledge, Intellectual History, Existentialism, Mental Health]
 ---
 
 # Mapping Metaphysics Without Finding Happiness

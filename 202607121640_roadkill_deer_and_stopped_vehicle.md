@@ -1,6 +1,7 @@
 ---
 title: Roadkill Deer And Stopped Vehicle
 permalink: /202607121640_roadkill_deer_and_stopped_vehicle/
+tags: [Technological Impact, Societal Critique, Wildlife Fatality, Rural Accident]
 ---
 
 # Roadkill Deer And Stopped Vehicle

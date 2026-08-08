@@ -1,6 +1,7 @@
 ---
 title: The Self-Loathing Twenty-Something Man of Inaction
 permalink: /202604151106_the_self-loathing_twenty-something_man_of_inaction/
+tags: [Memetic Knowledge, Existentialism, Conceptual Shift, Knowledge Diagrams]
 ---
 
 # The Self-Loathing Twenty-Something Man of Inaction

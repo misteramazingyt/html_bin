@@ -1,6 +1,7 @@
 ---
 title: White Supremacist Race Preservation Dilemma
 permalink: /202606261625_white_supremacist_race_preservation_dilemma/
+tags: [Memetic Knowledge, Societal Critique, Conceptual Shift]
 ---
 
 # White Supremacist Race Preservation Dilemma

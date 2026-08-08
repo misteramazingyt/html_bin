@@ -1,6 +1,7 @@
 ---
 title: Nietzsche's Philosophy And A Teenager's Realization
 permalink: /202605270441_nietzsches_philosophy_and_a_teenagers_realization/
+tags: [Intellectual History, Existentialism, Memetic Knowledge]
 ---
 
 # Nietzsche's Philosophy And A Teenager's Realization

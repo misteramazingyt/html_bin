@@ -371,3 +371,17 @@ dialog input[type="text"] {
   .brand { width: 100%; }
   .page h1 { font-size: 1.55rem; }
 }
+
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.tag-topic {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-family: var(--mono);
+  font-size: .68rem;
+}

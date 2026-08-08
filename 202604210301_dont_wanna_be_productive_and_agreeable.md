@@ -1,6 +1,7 @@
 ---
 title: Don't Wanna Be Productive And Agreeable
 permalink: /202604210301_dont_wanna_be_productive_and_agreeable/
+tags: [Memetic Knowledge, Existentialism, Social Contract]
 ---
 
 # Don't Wanna Be Productive And Agreeable

@@ -1,6 +1,7 @@
 ---
 title: Mainstream Economics Justifying Poverty As Science
 permalink: /202606261627_mainstream_economics_justifying_poverty_as_science/
+tags: [Economics, Societal Critique, Academic Humor, Memetic Knowledge]
 ---
 
 # Mainstream Economics Justifying Poverty As Science

@@ -74,6 +74,12 @@
 <main class="page" data-path="{{ page.path }}">
   <h1>{{ page.title }}</h1>
 
+  {% if page.tags and page.tags.size > 0 %}
+    <div class="tag-row">
+      {% for t in page.tags %}<span class="tag tag-topic">{{ t }}</span>{% endfor %}
+    </div>
+  {% endif %}
+
   {% if media_url != '' %}
     <div class="page-media">
       {% if media_kind == 'video' %}

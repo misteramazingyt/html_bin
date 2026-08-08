@@ -1,6 +1,7 @@
 ---
 title: What Is Their Plan To Make Money Without Jobs
 permalink: /202606261742_what_is_their_plan_to_make_money_without_jobs/
+tags: [Economics, Societal Critique, Memetic Knowledge]
 ---
 
 # What Is Their Plan To Make Money Without Jobs

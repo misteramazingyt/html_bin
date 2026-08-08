@@ -1,6 +1,7 @@
 ---
 title: Albert Camus Novels And Essays Reading Flowchart
 permalink: /202604122129_albert_camus_novels_and_essays_reading_flowchart/
+tags: [French Philosophy, Existentialism, Knowledge Diagrams, Intellectual History]
 ---
 
 # Albert Camus Novels And Essays Reading Flowchart

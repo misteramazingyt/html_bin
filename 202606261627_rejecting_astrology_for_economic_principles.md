@@ -1,6 +1,7 @@
 ---
 title: Rejecting Astrology For Economic Principles
 permalink: /202606261627_rejecting_astrology_for_economic_principles/
+tags: [Economics, Memetic Knowledge, Knowledge Diagrams, Academic Humor]
 ---
 
 # Rejecting Astrology For Economic Principles

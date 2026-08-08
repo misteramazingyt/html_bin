@@ -1,6 +1,7 @@
 ---
 title: MAGA Sharia Law Double Standard
 permalink: /202606261629_maga_sharia_law_double_standard/
+tags: [Memetic Knowledge, Societal Critique, Political Propaganda, Classic Animation]
 ---
 
 # MAGA Sharia Law Double Standard

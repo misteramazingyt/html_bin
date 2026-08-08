@@ -1,6 +1,7 @@
 ---
 title: Spiritual Bell Curve Of Smalltalk
 permalink: /202604161911_spiritual_bell_curve_of_smalltalk/
+tags: [Memetic Knowledge, Knowledge Diagrams, Existentialism, Conceptual Shift]
 ---
 
 # Spiritual Bell Curve Of Smalltalk

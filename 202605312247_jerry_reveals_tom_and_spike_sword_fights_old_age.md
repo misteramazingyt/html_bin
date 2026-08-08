@@ -1,6 +1,7 @@
 ---
 title: Jerry Reveals Tom And Spike Sword Fight's Old Age
 permalink: /202605312247_jerry_reveals_tom_and_spike_sword_fights_old_age/
+tags: [Memetic Knowledge, Conceptual Shift, Classic Animation]
 ---
 
 # Jerry Reveals Tom And Spike Sword Fight's Old Age

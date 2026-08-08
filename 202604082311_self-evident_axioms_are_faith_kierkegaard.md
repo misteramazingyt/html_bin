@@ -1,6 +1,7 @@
 ---
 title: Self-Evident Axioms Are Faith Kierkegaard
 permalink: /202604082311_self-evident_axioms_are_faith_kierkegaard/
+tags: [Memetic Knowledge, Conceptual Shift, Intellectual History]
 ---
 
 # Self-Evident Axioms Are Faith Kierkegaard

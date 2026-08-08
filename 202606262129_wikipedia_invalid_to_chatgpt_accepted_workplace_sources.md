@@ -1,6 +1,7 @@
 ---
 title: Wikipedia Invalid To ChatGPT Accepted Workplace Sources
 permalink: /202606262129_wikipedia_invalid_to_chatgpt_accepted_workplace_sources/
+tags: [Memetic Knowledge, Conceptual Shift, Academic Humor, Encyclopedic Knowledge]
 ---
 
 # Wikipedia Invalid To ChatGPT Accepted Workplace Sources

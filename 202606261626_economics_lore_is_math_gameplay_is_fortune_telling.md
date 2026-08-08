@@ -1,6 +1,7 @@
 ---
 title: Economics Lore Is Math Gameplay Is Fortune Telling
 permalink: /202606261626_economics_lore_is_math_gameplay_is_fortune_telling/
+tags: [Economics, Memetic Knowledge, Societal Critique, Academic Humor]
 ---
 
 # Economics Lore Is Math Gameplay Is Fortune Telling

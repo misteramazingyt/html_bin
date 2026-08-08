@@ -1,6 +1,7 @@
 ---
 title: Trump Healing A Man With Divine Light
 permalink: /202604132102_trump_healing_a_man_with_divine_light/
+tags: [Memetic Knowledge, Political Propaganda, Leader Deification, Conceptual Shift]
 ---
 
 # Trump Healing A Man With Divine Light

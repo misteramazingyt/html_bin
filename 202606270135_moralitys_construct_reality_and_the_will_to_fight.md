@@ -1,6 +1,7 @@
 ---
 title: Morality's Construct, Reality, And The Will To Fight
 permalink: /202606270135_moralitys_construct_reality_and_the_will_to_fight/
+tags: [Social Construct, Conceptual Shift, Existentialism, Classic Animation]
 ---
 
 # Morality's Construct, Reality, And The Will To Fight

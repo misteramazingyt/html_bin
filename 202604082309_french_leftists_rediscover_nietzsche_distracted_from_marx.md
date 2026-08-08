@@ -1,6 +1,7 @@
 ---
 title: French Leftists Rediscover Nietzsche, Distracted From Marx
 permalink: /202604082309_french_leftists_rediscover_nietzsche_distracted_from_marx/
+tags: [Memetic Knowledge, Intellectual History, French Philosophy, Conceptual Shift]
 ---
 
 # French Leftists Rediscover Nietzsche, Distracted From Marx

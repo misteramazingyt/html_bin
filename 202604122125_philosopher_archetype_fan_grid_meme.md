@@ -1,6 +1,7 @@
 ---
 title: Philosopher Archetype Fan Grid Meme
 permalink: /202604122125_philosopher_archetype_fan_grid_meme/
+tags: [Memetic Knowledge, Knowledge Diagrams, Intellectual History]
 ---
 
 # Philosopher Archetype Fan Grid Meme

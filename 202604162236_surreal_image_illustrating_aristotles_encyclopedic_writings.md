@@ -1,6 +1,7 @@
 ---
 title: Surreal Image Illustrating Aristotle's Encyclopedic Writings
 permalink: /202604162236_surreal_image_illustrating_aristotles_encyclopedic_writings/
+tags: [Memetic Knowledge, Intellectual History, Encyclopedic Knowledge]
 ---
 
 # Surreal Image Illustrating Aristotle's Encyclopedic Writings

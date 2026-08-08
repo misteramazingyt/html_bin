@@ -1,6 +1,7 @@
 ---
 title: Types Of Philosophy Paper Examples
 permalink: /202606210040_types_of_philosophy_paper_examples/
+tags: [Existentialism, Intellectual History, Societal Critique, Academic Humor]
 ---
 
 # Types Of Philosophy Paper Examples

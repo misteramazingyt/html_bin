@@ -1,6 +1,7 @@
 ---
 title: Narcissus Myth Playing Out With Clavicular's Ruined Nose
 permalink: /202606231507_narcissus_myth_playing_out_with_claviculars_ruined_nose/
+tags: [Medical Industrial Complex, Societal Critique, Mental Health, Narcissus Myth]
 ---
 
 # Narcissus Myth Playing Out With Clavicular's Ruined Nose

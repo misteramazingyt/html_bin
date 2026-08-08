@@ -1,6 +1,7 @@
 ---
 title: American Social Contract Flow Diagram
 permalink: /202604151115_american_social_contract_flow_diagram/
+tags: [Knowledge Diagrams, Economics, Political Propaganda, Social Contract]
 ---
 
 # American Social Contract Flow Diagram

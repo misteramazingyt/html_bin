@@ -1,6 +1,7 @@
 ---
 title: Two Sides Acceptance And Existential Questions
 permalink: /202604122111_two_sides_acceptance_and_existential_questions/
+tags: [Memetic Knowledge, Conceptual Shift, Existentialism]
 ---
 
 # Two Sides Acceptance And Existential Questions
