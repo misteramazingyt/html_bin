@@ -1,21 +1,32 @@
 <dialog id="token-dialog">
-  <h2>GitHub token</h2>
-  <p>
+  <h2 id="token-title">Sign in</h2>
+  <p id="token-body">
     Notes live in the markdown source, so saving one commits to
-    <code>{{ site.repository }}</code>. Paste a <strong>fine-grained</strong> personal access
-    token limited to that single repository with <code>Contents: Read and write</code>.
+    <code>{{ site.repository }}</code>. Sign in with GitHub — only
+    <code>{{ site.repository | split: '/' | first }}</code> is handed a token back;
+    any other account is refused by the broker.
   </p>
-  <p>
-    It is kept in this browser's <code>localStorage</code> and sent only to
-    <code>api.github.com</code>. Anyone with access to this browser profile can read it —
-    don't set it on a shared machine.
-  </p>
-  <form method="dialog">
+  <p class="status" id="token-status"></p>
+
+  <details>
+    <summary style="cursor:pointer;font-size:.84rem;color:var(--text-dim)">Use a personal access token instead</summary>
+    <p style="margin-top:10px">
+      Fallback for when the sign-in broker is unavailable. Use a
+      <strong>fine-grained</strong> token limited to this repository with
+      <code>Contents: Read and write</code>. It is kept in this browser's
+      <code>localStorage</code> and sent only to <code>api.github.com</code>.
+    </p>
     <input id="token-input" type="password" placeholder="github_pat_…" autocomplete="off" spellcheck="false">
     <div class="dialog-actions">
       <button class="btn" id="token-clear" type="button">Clear</button>
-      <button class="btn" type="submit" value="cancel">Cancel</button>
-      <button class="btn btn-primary" id="token-save" type="button">Save</button>
+      <button class="btn btn-primary" id="token-save" type="button">Save token</button>
+    </div>
+  </details>
+
+  <form method="dialog" style="margin-top:16px">
+    <div class="dialog-actions">
+      <button class="btn" type="submit" value="cancel">Close</button>
+      <button class="btn btn-primary" id="signin-go" type="button">Sign in with GitHub</button>
     </div>
   </form>
 </dialog>
