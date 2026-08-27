@@ -2,6 +2,7 @@
 title: Problematic Misogyny And Self-Fetishization Of Male Gaze
 permalink: /202608061310_problematic_misogyny_and_self-fetishization_of_male_gaze/
 tags: [Memetic Knowledge, Societal Critique, Social Construct, Male Gaze]
+bin: [Video "essays"]
 ---
 
 # Problematic Misogyny And Self-Fetishization Of Male Gaze
