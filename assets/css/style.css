@@ -207,6 +207,9 @@ a { color: var(--accent); }
   background: var(--sel-soft); border: 1px solid var(--sel); border-radius: var(--radius);
 }
 .selbar-count { font-size: .85rem; color: var(--text); margin-right: 4px; }
+/* an author display rule beats the UA [hidden] rule, so restate it or the
+   bar sits there permanently reading "0 selected" */
+.selbar[hidden] { display: none; }
 
 /* ---------- items: shared ---------- */
 
