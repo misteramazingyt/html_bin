@@ -2,6 +2,7 @@
 title: Doomer Girl Overwhelmed by Social Media Drama
 permalink: /202608270234_doomer_girl_overwhelmed_by_social_media_drama/
 tags: [Feeling Overwhelmed, Technological Impact, Memetic Knowledge, Social Media]
+bin: ["Video \"essays\""]
 ---
 
 # Doomer Girl Overwhelmed by Social Media Drama
