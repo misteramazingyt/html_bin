@@ -1,0 +1,26 @@
+---
+layout: null
+permalink: /bin_tags.json
+---
+{%- comment -%}
+  Feed for the Chrome drop-zone extension: every manual (bin) tag with how many
+  pages carry it and when it was last used, so the pie can rank by volume and
+  recency without scraping the index.
+{%- endcomment -%}
+{%- assign pages = site.pages | where_exp: "p", "p.title" -%}
+{%- assign all = "" | split: "" -%}
+{%- for p in pages -%}{%- for t in p.bin -%}{%- assign all = all | push: t -%}{%- endfor -%}{%- endfor -%}
+{%- assign uniq = all | uniq | sort -%}
+[
+{%- for t in uniq -%}
+{%- assign n = 0 -%}{%- assign last = "" -%}
+{%- for p in pages -%}
+{%- if p.bin contains t -%}
+{%- assign n = n | plus: 1 -%}
+{%- assign stamp = p.name | split: "_" | first -%}
+{%- if stamp > last -%}{%- assign last = stamp -%}{%- endif -%}
+{%- endif -%}
+{%- endfor -%}
+{"tag":{{ t | jsonify }},"count":{{ n }},"last":"{{ last }}"}{% unless forloop.last %},{% endunless %}
+{%- endfor -%}
+]
