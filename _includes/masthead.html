@@ -3,13 +3,19 @@
     <a class="brand" href="{{ '/' | relative_url }}">html<span>_</span>bin</a>
     {% if include.show_search %}
       <span class="count" id="count">{{ include.count }} pages</span>
-      <input class="search" id="search" type="search" placeholder="Search titles and notes…" autocomplete="off">
+      <input class="search" id="search" type="search" placeholder="Search titles, notes and tags…" autocomplete="off">
     {% else %}
       <span class="spacer"></span>
     {% endif %}
+    {% if include.show_view %}
+      <div class="viewtoggle" role="group" aria-label="View mode">
+        <button class="btn btn-sm js-view" type="button" data-view="cards" title="Icon view">▦</button>
+        <button class="btn btn-sm js-view" type="button" data-view="details" title="Details view">☰</button>
+      </div>
+    {% endif %}
     <button class="btn" id="theme-toggle" title="Toggle light / dark" aria-label="Toggle light or dark theme">◐</button>
     <span class="whoami" id="whoami" hidden></span>
-    <button class="btn" id="signin-btn" title="Sign in with GitHub to edit notes" hidden>Sign in</button>
+    <button class="btn" id="signin-btn" title="Sign in with GitHub to edit" hidden>Sign in</button>
     <button class="btn" id="signout-btn" title="Sign out" hidden>Sign out</button>
   </div>
 </header>

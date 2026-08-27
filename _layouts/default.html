@@ -74,9 +74,15 @@
 <main class="page" data-path="{{ page.path }}">
   <h1>{{ page.title }}</h1>
 
+  {% if page.bin and page.bin.size > 0 %}
+    <div class="tag-row">
+      {% for t in page.bin %}<span class="tag tag-bin">{{ t }}</span>{% endfor %}
+    </div>
+  {% endif %}
+
   {% if page.tags and page.tags.size > 0 %}
     <div class="tag-row">
-      {% for t in page.tags %}<span class="tag tag-topic">{{ t }}</span>{% endfor %}
+      {% for t in page.tags %}<span class="tag tag-auto">{{ t }}</span>{% endfor %}
     </div>
   {% endif %}
 

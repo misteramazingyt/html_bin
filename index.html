@@ -20,17 +20,64 @@ permalink: /
    | sort: "name"
    | reverse %}
 
-{% include masthead.html show_search=true count=note_pages.size %}
+{%- comment -%}
+  Two tag families, kept in separate front matter keys so they can never be
+  confused: `tags` is machine-written by the capture pipeline, `bin` is the
+  user's own. Only `bin` is editable from this page.
+{%- endcomment -%}
+
+{% assign auto_all = "" | split: "" %}
+{% assign bin_all = "" | split: "" %}
+{% for p in note_pages %}
+  {% for t in p.tags %}{% assign auto_all = auto_all | push: t %}{% endfor %}
+  {% for t in p.bin %}{% assign bin_all = bin_all | push: t %}{% endfor %}
+{% endfor %}
+{% assign auto_uniq = auto_all | uniq | sort %}
+{% assign bin_uniq = bin_all | uniq | sort %}
+
+{% include masthead.html show_search=true count=note_pages.size show_view=true %}
 
 <div class="wrap">
-  <div class="grid">
-  {% for p in note_pages %}
 
-    {%- comment -%}
-      Same dual-shape parsing as the page layout: `p.content` arrives as raw
-      markdown or as rendered HTML depending on build order, so key off
-      whichever markers are actually present.
-    {%- endcomment -%}
+  <div class="filters" id="filters">
+    {% if bin_uniq.size > 0 %}
+      <div class="filter-group">
+        <span class="filter-label">My tags</span>
+        {% for t in bin_uniq %}
+          {% assign n = bin_all | where_exp: "x", "x == t" | size %}
+          <button class="chip chip-bin" type="button" data-filter="bin" data-tag="{{ t | escape }}">
+            {{ t }}<span class="chip-n">{{ n }}</span>
+          </button>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% if auto_uniq.size > 0 %}
+      <div class="filter-group">
+        <span class="filter-label">Auto</span>
+        {% for t in auto_uniq %}
+          {% assign n = auto_all | where_exp: "x", "x == t" | size %}
+          <button class="chip chip-auto" type="button" data-filter="auto" data-tag="{{ t | escape }}">
+            {{ t }}<span class="chip-n">{{ n }}</span>
+          </button>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <button class="btn btn-sm" id="clear-filters" type="button" hidden>Clear filters</button>
+  </div>
+
+  <div class="selbar" id="selbar" hidden>
+    <span class="selbar-count"><b id="sel-count">0</b> selected</span>
+    <button class="btn btn-sm btn-primary" id="sel-tag" type="button">Add tags…</button>
+    <button class="btn btn-sm" id="sel-untag" type="button">Remove tags…</button>
+    <button class="btn btn-sm btn-danger" id="sel-delete" type="button">Delete…</button>
+    <button class="btn btn-sm" id="sel-clear" type="button">Clear selection</button>
+    <span class="status" id="sel-status"></span>
+  </div>
+
+  <div class="grid view-cards" id="grid">
+  {% for p in note_pages %}
 
     {% assign raw = p.content %}
     {% assign is_html = false %}
@@ -77,59 +124,60 @@ permalink: /
     {% assign mo = stamp | slice: 4, 2 %}
     {% assign dy = stamp | slice: 6, 2 %}
 
-    <article class="card" data-path="{{ p.path }}"
-             data-search="{{ p.title | downcase | escape }} {{ notes_text | downcase | escape }} {{ p.tags | join: ' ' | downcase | escape }}">
-      <div class="card-media">
+    <article class="item" data-path="{{ p.path }}"
+             data-auto="{{ p.tags | join: '|' | escape }}"
+             data-bin="{{ p.bin | join: '|' | escape }}"
+             data-search="{{ p.title | downcase | escape }} {{ notes_text | downcase | escape }} {{ p.tags | join: ' ' | downcase | escape }} {{ p.bin | join: ' ' | downcase | escape }}">
+
+      <div class="item-media">
         {% if media_url != '' %}
           {% if media_kind == 'video' %}
             <video controls preload="metadata"><source src="{{ media_url }}"></video>
+            <div class="thumb thumb-video" aria-hidden="true">▶</div>
           {% else %}
             <img src="{{ media_url }}" alt="{{ p.title | escape }}" loading="lazy">
           {% endif %}
         {% else %}
           <div class="missing">No media</div>
+          <div class="thumb thumb-none" aria-hidden="true">—</div>
         {% endif %}
       </div>
 
-      <div class="card-body">
-        <h2 class="card-title">
-          <a href="{{ p.permalink | default: p.url | relative_url }}">{{ p.title }}</a>
-        </h2>
+      <h2 class="item-title">
+        <a href="{{ p.permalink | default: p.url | relative_url }}">{{ p.title }}</a>
+      </h2>
 
-        <div class="card-meta">
-          {% if yr != '' %}<span>{{ yr }}-{{ mo }}-{{ dy }}</span>{% endif %}
-          {% if media_kind != '' %}<span class="tag">{{ media_kind }}</span>{% endif %}
+      <div class="item-auto tag-row">
+        {% for t in p.tags %}<span class="tag tag-auto">{{ t }}</span>{% endfor %}
+      </div>
+
+      <div class="item-bin tag-row">
+        {% for t in p.bin %}<span class="tag tag-bin">{{ t }}</span>{% endfor %}
+      </div>
+
+      <div class="item-date">{% if yr != '' %}{{ yr }}-{{ mo }}-{{ dy }}{% endif %}</div>
+
+      <p class="notes">{{ notes_text }}</p>
+
+      <div class="editor">
+        <textarea aria-label="Notes" placeholder="Write notes… (markdown allowed)"></textarea>
+        <div class="editor-row">
+          <button class="btn btn-primary btn-sm js-save" type="button">Save</button>
+          <button class="btn btn-sm js-cancel" type="button">Cancel</button>
         </div>
+      </div>
 
-        {% if p.tags and p.tags.size > 0 %}
-          <div class="tag-row">
-            {% for t in p.tags %}<span class="tag tag-topic">{{ t }}</span>{% endfor %}
-          </div>
-        {% endif %}
-
-        <p class="notes">{{ notes_text }}</p>
-
-        <div class="editor">
-          <textarea aria-label="Notes" placeholder="Write notes… (markdown allowed)"></textarea>
-          <div class="editor-row">
-            <button class="btn btn-primary btn-sm js-save" type="button">Save</button>
-            <button class="btn btn-sm js-cancel" type="button">Cancel</button>
-          </div>
-        </div>
-
-        <div class="card-actions">
-          <button class="btn btn-sm js-edit" type="button">Edit notes</button>
-          <span class="status"></span>
-        </div>
+      <div class="item-actions">
+        <button class="btn btn-sm js-edit" type="button">Edit notes</button>
+        <span class="status"></span>
       </div>
     </article>
 
   {% endfor %}
   </div>
 
-  {% if note_pages.size == 0 %}
-    <div class="empty">Nothing here yet.</div>
-  {% endif %}
+  <div class="empty" id="no-results" hidden>Nothing matches those filters.</div>
+  {% if note_pages.size == 0 %}<div class="empty">Nothing here yet.</div>{% endif %}
 </div>
 
 {% include token-dialog.html %}

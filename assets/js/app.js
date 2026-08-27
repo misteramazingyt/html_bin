@@ -1,12 +1,12 @@
-/* html_bin — theme, search, GitHub sign-in, and in-page notes editing.
+/* html_bin — theme, search, tag filtering, views, selection, and editing.
  *
- * Notes live in the markdown source, so saving means committing to the repo.
- * Auth is a normal GitHub OAuth sign-in: the browser never sees the client
- * secret. The code->token exchange happens in the n8n workflow
- * "GitHub OAuth (html_bin)", which also refuses to hand a token back to any
- * account other than the repo owner. The token arrives in a URL fragment
- * (never sent to a server), is stripped from the address bar immediately, and
- * is kept in localStorage thereafter.
+ * Two tag families live in the markdown front matter and never mix:
+ *   tags: [...]  written by the capture pipeline (Gemini). Read-only here.
+ *   bin:  [...]  the user's own. Everything editable on this page touches
+ *                only this key.
+ *
+ * Editing commits to the repo through the GitHub contents API, authorised by
+ * a normal GitHub sign-in brokered by n8n (the browser never sees a secret).
  */
 (function () {
   "use strict";
@@ -21,6 +21,7 @@
   var LOGIN_KEY = "html_bin.gh_login";
   var STATE_KEY = "html_bin.oauth_state";
   var THEME_KEY = "html_bin.theme";
+  var VIEW_KEY = "html_bin.view";
 
   /* ---------- theme ---------- */
 
@@ -33,6 +34,55 @@
     var next = cur === "dark" ? "light" : "dark";
     document.documentElement.dataset.theme = next;
     localStorage.setItem(THEME_KEY, next);
+  }
+
+  /* ---------- tag colour ----------
+   * 12 hues, spaced round the wheel and avoiding the muddy yellows. A tag
+   * always lands on the same hue because the hash is stable, so colour is a
+   * usable identity cue rather than decoration.
+   */
+  var HUES = [8, 30, 45, 92, 140, 165, 190, 212, 240, 275, 305, 335];
+
+  // FNV-1a plus a murmur3 finaliser. A plain *31 hash clumps badly modulo 12
+  // on short words — "marx", "dewey" and "funny" all landed on one hue — so the
+  // avalanche step is doing real work here, not ceremony.
+  function hueFor(tag) {
+    var s = String(tag).toLowerCase(), h = 2166136261 >>> 0;
+    for (var i = 0; i < s.length; i++) {
+      h ^= s.charCodeAt(i);
+      h = Math.imul(h, 16777619) >>> 0;
+    }
+    h ^= h >>> 16; h = Math.imul(h, 2246822507) >>> 0;
+    h ^= h >>> 13; h = Math.imul(h, 3266489909) >>> 0;
+    h = (h ^ (h >>> 16)) >>> 0;
+    return HUES[h % HUES.length];
+  }
+
+  function paintTags(root) {
+    (root || document).querySelectorAll(".tag-bin, .chip-bin").forEach(function (el) {
+      var t = el.dataset.tag || el.textContent.trim();
+      el.style.setProperty("--h", hueFor(t));
+    });
+  }
+
+  /* ---------- small helpers ---------- */
+
+  function listOf(el, key) {
+    return (el.dataset[key] || "").split("|").map(function (s) { return s.trim(); })
+      .filter(Boolean);
+  }
+
+  function uniqCI(arr) {
+    var seen = {}, out = [];
+    arr.forEach(function (t) {
+      var k = t.toLowerCase();
+      if (!seen[k]) { seen[k] = true; out.push(t); }
+    });
+    return out;
+  }
+
+  function parseTagInput(s) {
+    return uniqCI(String(s || "").split(",").map(function (t) { return t.trim(); }).filter(Boolean));
   }
 
   /* ---------- auth ---------- */
@@ -50,7 +100,7 @@
 
   function signIn() {
     if (!CLIENT_ID || !BROKER) {
-      dialogStatus("Sign-in isn't configured yet: set github_client_id in _config.yml.", "err");
+      dialogStatus("Sign-in isn't configured: set github_client_id in _config.yml.", "err");
       return;
     }
     var state = randomState();
@@ -68,31 +118,24 @@
     reflectAuth();
   }
 
-  // Consume #gh_token / #gh_error handed back by the broker.
+  var pendingNotice = "";
+
   function consumeCallback() {
     if (!location.hash || location.hash.indexOf("gh_") === -1) return;
     var p = new URLSearchParams(location.hash.slice(1));
-    var token = p.get("gh_token");
-    var error = p.get("gh_error");
-    var state = p.get("gh_state");
+    var token = p.get("gh_token"), error = p.get("gh_error"), state = p.get("gh_state");
     if (!token && !error) return;
 
-    // Strip the fragment before anything else can read it.
     history.replaceState(null, "", location.pathname + location.search);
 
     if (error) { pendingNotice = "Sign-in failed: " + error; return; }
 
     var expected = sessionStorage.getItem(STATE_KEY);
     sessionStorage.removeItem(STATE_KEY);
-    if (expected && state !== expected) {
-      pendingNotice = "Sign-in rejected: state mismatch.";
-      return;
-    }
+    if (expected && state !== expected) { pendingNotice = "Sign-in rejected: state mismatch."; return; }
     localStorage.setItem(TOKEN_KEY, token);
     pendingNotice = "";
   }
-
-  var pendingNotice = "";
 
   function reflectAuth() {
     var signedIn = !!getToken();
@@ -107,7 +150,6 @@
     }
   }
 
-  // Confirm the token works and remember who it belongs to.
   function refreshIdentity() {
     if (!getToken()) return;
     fetch("https://api.github.com/user", { headers: ghHeaders() })
@@ -115,9 +157,7 @@
         if (r.status === 401) { signOut(); throw new Error("session expired"); }
         return r.json();
       })
-      .then(function (j) {
-        if (j && j.login) { localStorage.setItem(LOGIN_KEY, j.login); reflectAuth(); }
-      })
+      .then(function (j) { if (j && j.login) { localStorage.setItem(LOGIN_KEY, j.login); reflectAuth(); } })
       .catch(function () { /* offline is not a reason to sign out */ });
   }
 
@@ -162,25 +202,25 @@
     };
   }
 
+  function contentsURL(path) {
+    return "https://api.github.com/repos/" + REPO + "/contents/" +
+      encodeURIComponent(path).replace(/%2F/g, "/");
+  }
+
   function ghGet(path) {
-    var url = "https://api.github.com/repos/" + REPO + "/contents/" +
-      encodeURIComponent(path).replace(/%2F/g, "/") + "?ref=" + encodeURIComponent(BRANCH);
-    return fetch(url, { headers: ghHeaders() }).then(function (r) {
-      if (r.status === 401) { signOut(); throw new Error("signed out — sign in again"); }
-      if (!r.ok) throw new Error("read failed (" + r.status + ")");
-      return r.json();
-    });
+    return fetch(contentsURL(path) + "?ref=" + encodeURIComponent(BRANCH), { headers: ghHeaders() })
+      .then(function (r) {
+        if (r.status === 401) { signOut(); throw new Error("signed out — sign in again"); }
+        if (!r.ok) throw new Error("read failed (" + r.status + ")");
+        return r.json();
+      });
   }
 
   function ghPut(path, text, sha, message) {
-    var url = "https://api.github.com/repos/" + REPO + "/contents/" +
-      encodeURIComponent(path).replace(/%2F/g, "/");
-    return fetch(url, {
+    return fetch(contentsURL(path), {
       method: "PUT",
       headers: Object.assign({ "Content-Type": "application/json" }, ghHeaders()),
-      body: JSON.stringify({
-        message: message, content: b64encode(text), sha: sha, branch: BRANCH
-      })
+      body: JSON.stringify({ message: message, content: b64encode(text), sha: sha, branch: BRANCH })
     }).then(function (r) {
       return r.json().then(function (j) {
         if (!r.ok) throw new Error(j.message || ("write failed (" + r.status + ")"));
@@ -189,19 +229,77 @@
     });
   }
 
-  /* ---------- markdown surgery ----------
-   * Replace only the block between the Notes heading and the footnote rule,
-   * leaving front matter, media and the source footnote untouched.
+  function ghDelete(path, sha, message) {
+    return fetch(contentsURL(path), {
+      method: "DELETE",
+      headers: Object.assign({ "Content-Type": "application/json" }, ghHeaders()),
+      body: JSON.stringify({ message: message, sha: sha, branch: BRANCH })
+    }).then(function (r) {
+      return r.json().then(function (j) {
+        if (!r.ok) throw new Error(j.message || ("delete failed (" + r.status + ")"));
+        return j;
+      });
+    });
+  }
+
+  /* ---------- front matter ----------
+   * Only the `bin:` line is ever touched. title/permalink/tags and the whole
+   * body are passed through byte-for-byte.
    */
+
+  function splitFM(md) {
+    var m = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?/.exec(md);
+    if (!m) return null;
+    return { body: m[1], rest: md.slice(m[0].length) };
+  }
+
+  function getBin(md) {
+    var fm = splitFM(md);
+    if (!fm) return [];
+    var m = /^bin\s*:\s*(.*)$/m.exec(fm.body);
+    if (!m) return [];
+    var v = m[1].trim().replace(/^\[/, "").replace(/\]$/, "");
+    return v.split(",").map(function (t) { return t.trim(); }).filter(Boolean);
+  }
+
+  function setBin(md, tags) {
+    var line = "bin: [" + tags.join(", ") + "]";
+    var fm = splitFM(md);
+
+    if (!fm) {
+      // A page with no front matter (a scratch file). Adding tags creates one;
+      // clearing tags leaves the file untouched rather than manufacturing an
+      // empty block — which would also make this non-idempotent.
+      if (!tags.length) return md;
+      return "---\n" + line + "\n---\n\n" + md;
+    }
+
+    var lines = fm.body.split("\n");
+    var idx = -1;
+    for (var i = 0; i < lines.length; i++) {
+      if (/^bin\s*:/.test(lines[i])) { idx = i; break; }
+    }
+
+    if (!tags.length) {
+      if (idx !== -1) lines.splice(idx, 1);
+    } else if (idx !== -1) {
+      lines[idx] = line;
+    } else {
+      lines.push(line);
+    }
+
+    return "---\n" + lines.join("\n") + "\n---\n" + fm.rest;
+  }
+
+  /* ---------- notes body ---------- */
+
   function replaceNotes(md, notes) {
     var m = /^##\s+Notes.*$/m.exec(md);
     var body = notes.trim();
 
     if (!m) {
       var fn = /\n---\s*\n\s*\[\^1\]:/.exec(md);
-      if (fn) {
-        return md.slice(0, fn.index) + "\n\n## Notes [^1]\n\n" + body + "\n" + md.slice(fn.index);
-      }
+      if (fn) return md.slice(0, fn.index) + "\n\n## Notes [^1]\n\n" + body + "\n" + md.slice(fn.index);
       return md.replace(/\s*$/, "") + "\n\n## Notes\n\n" + body + "\n";
     }
 
@@ -224,7 +322,270 @@
     return (sep ? after.slice(0, sep.index) : after).trim();
   }
 
-  /* ---------- editor wiring ---------- */
+  /* ---------- view mode ---------- */
+
+  function setView(v) {
+    var grid = document.getElementById("grid");
+    if (!grid) return;
+    grid.classList.toggle("view-cards", v !== "details");
+    grid.classList.toggle("view-details", v === "details");
+    document.querySelectorAll(".js-view").forEach(function (b) {
+      b.classList.toggle("active", b.dataset.view === v);
+    });
+    localStorage.setItem(VIEW_KEY, v);
+  }
+
+  /* ---------- filtering ---------- */
+
+  var activeAuto = [];
+  var activeBin = [];
+
+  function applyFilter() {
+    var input = document.getElementById("search");
+    var q = input ? input.value.trim().toLowerCase() : "";
+    var items = document.querySelectorAll(".item");
+    var shown = 0;
+
+    items.forEach(function (it) {
+      var hit = !q || (it.dataset.search || "").indexOf(q) !== -1;
+
+      // Chips narrow rather than widen: every selected tag must be present.
+      if (hit && activeAuto.length) {
+        var a = listOf(it, "auto").map(function (s) { return s.toLowerCase(); });
+        hit = activeAuto.every(function (t) { return a.indexOf(t.toLowerCase()) !== -1; });
+      }
+      if (hit && activeBin.length) {
+        var b = listOf(it, "bin").map(function (s) { return s.toLowerCase(); });
+        hit = activeBin.every(function (t) { return b.indexOf(t.toLowerCase()) !== -1; });
+      }
+
+      it.hidden = !hit;
+      if (hit) shown++;
+    });
+
+    var count = document.getElementById("count");
+    if (count) count.textContent = (shown === items.length)
+      ? items.length + " pages"
+      : shown + " of " + items.length;
+
+    var none = document.getElementById("no-results");
+    if (none) none.hidden = shown !== 0 || items.length === 0;
+
+    var clear = document.getElementById("clear-filters");
+    if (clear) clear.hidden = !(activeAuto.length || activeBin.length);
+  }
+
+  function toggleChip(btn) {
+    var tag = btn.dataset.tag;
+    var arr = btn.dataset.filter === "bin" ? activeBin : activeAuto;
+    var i = arr.indexOf(tag);
+    if (i === -1) arr.push(tag); else arr.splice(i, 1);
+    btn.classList.toggle("on", i === -1);
+    applyFilter();
+  }
+
+  function clearFilters() {
+    activeAuto = [];
+    activeBin = [];
+    document.querySelectorAll(".chip.on").forEach(function (c) { c.classList.remove("on"); });
+    applyFilter();
+  }
+
+  /* ---------- selection ---------- */
+
+  var selected = [];   // paths, in click order
+  var lastIndex = -1;
+
+  function visibleItems() {
+    return Array.prototype.filter.call(document.querySelectorAll(".item"), function (it) {
+      return !it.hidden;
+    });
+  }
+
+  function isSelected(it) { return selected.indexOf(it.dataset.path) !== -1; }
+
+  function setSelected(it, on) {
+    var p = it.dataset.path, i = selected.indexOf(p);
+    if (on && i === -1) selected.push(p);
+    if (!on && i !== -1) selected.splice(i, 1);
+    it.classList.toggle("selected", on);
+  }
+
+  function clearSelection() {
+    document.querySelectorAll(".item.selected").forEach(function (it) { it.classList.remove("selected"); });
+    selected = [];
+    lastIndex = -1;
+    reflectSelection();
+  }
+
+  function reflectSelection() {
+    var bar = document.getElementById("selbar");
+    var n = document.getElementById("sel-count");
+    if (n) n.textContent = selected.length;
+    if (bar) bar.hidden = selected.length === 0;
+  }
+
+  function onItemClick(e) {
+    var it = e.target.closest(".item");
+    if (!it) return;
+
+    // Plain clicks stay ordinary so links and buttons keep working.
+    if (!e.ctrlKey && !e.metaKey && !e.shiftKey) return;
+    if (e.target.closest("a, button, textarea, video")) return;
+
+    e.preventDefault();
+    var items = visibleItems();
+    var idx = items.indexOf(it);
+
+    if (e.shiftKey && lastIndex !== -1) {
+      var lo = Math.min(lastIndex, idx), hi = Math.max(lastIndex, idx);
+      for (var i = lo; i <= hi; i++) setSelected(items[i], true);
+    } else {
+      setSelected(it, !isSelected(it));
+      lastIndex = idx;
+    }
+    reflectSelection();
+  }
+
+  /* ---------- rendering tags back into the DOM ---------- */
+
+  function renderBinTags(it, tags) {
+    it.dataset.bin = tags.join("|");
+    var row = it.querySelector(".item-bin");
+    if (row) {
+      row.innerHTML = "";
+      tags.forEach(function (t) {
+        var s = document.createElement("span");
+        s.className = "tag tag-bin";
+        s.textContent = t;
+        s.style.setProperty("--h", hueFor(t));
+        row.appendChild(s);
+      });
+    }
+    // keep search in sync so a freshly added tag is findable immediately
+    var base = (it.dataset.search || "").split("  ")[0];
+    it.dataset.search = (it.querySelector(".item-title").textContent.trim().toLowerCase()) + " " +
+      listOf(it, "auto").join(" ").toLowerCase() + " " + tags.join(" ").toLowerCase() +
+      " " + base;
+  }
+
+  function ensureChip(tag) {
+    var group = document.querySelector('.filter-group');
+    if (!group) return;
+    var exists = document.querySelector('.chip-bin[data-tag="' + CSS.escape(tag) + '"]');
+    if (exists) return;
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "chip chip-bin";
+    b.dataset.filter = "bin";
+    b.dataset.tag = tag;
+    b.textContent = tag;
+    b.style.setProperty("--h", hueFor(tag));
+    b.addEventListener("click", function () { toggleChip(b); });
+    group.appendChild(b);
+  }
+
+  /* ---------- bulk operations ---------- */
+
+  function selStatus(msg, kind) {
+    var el = document.getElementById("sel-status");
+    if (el) { el.textContent = msg || ""; el.className = "status" + (kind ? " " + kind : ""); }
+  }
+
+  function selectedItems() {
+    return selected.map(function (p) {
+      return document.querySelector('.item[data-path="' + CSS.escape(p) + '"]');
+    }).filter(Boolean);
+  }
+
+  // Runs one file at a time: the contents API is per-file and needs a fresh
+  // sha for each write, and serialising keeps the failure report legible.
+  function eachSelected(label, fn) {
+    if (!getToken()) { openDialog(); return; }
+    var items = selectedItems();
+    if (!items.length) return;
+
+    var done = 0, failed = [];
+    setBusy(true);
+
+    function step(i) {
+      if (i >= items.length) {
+        setBusy(false);
+        selStatus(label + ": " + done + " ok" +
+          (failed.length ? ", " + failed.length + " failed — " + failed[0] : "") +
+          " — live in ~1 min", failed.length ? "err" : "ok");
+        return;
+      }
+      selStatus(label + " " + (i + 1) + "/" + items.length + "…");
+      fn(items[i])
+        .then(function () { done++; })
+        .catch(function (e) { failed.push(items[i].dataset.path + ": " + e.message); })
+        .then(function () { step(i + 1); });
+    }
+    step(0);
+  }
+
+  function setBusy(on) {
+    ["sel-tag", "sel-untag", "sel-delete"].forEach(function (id) {
+      var b = document.getElementById(id);
+      if (b) b.disabled = on;
+    });
+  }
+
+  function bulkAddTags() {
+    var raw = prompt("Add tags to " + selected.length + " page(s).\nComma-separated:");
+    if (raw === null) return;
+    var add = parseTagInput(raw);
+    if (!add.length) return;
+    add.forEach(ensureChip);
+
+    eachSelected("Tagged", function (it) {
+      return ghGet(it.dataset.path).then(function (j) {
+        var md = b64decode(j.content);
+        var merged = uniqCI(getBin(md).concat(add));
+        return ghPut(it.dataset.path, setBin(md, merged), j.sha,
+          "Add tags [" + add.join(", ") + "]: " + it.dataset.path)
+          .then(function () { renderBinTags(it, merged); });
+      });
+    });
+  }
+
+  function bulkRemoveTags() {
+    var raw = prompt("Remove tags from " + selected.length + " page(s).\nComma-separated:");
+    if (raw === null) return;
+    var drop = parseTagInput(raw).map(function (t) { return t.toLowerCase(); });
+    if (!drop.length) return;
+
+    eachSelected("Untagged", function (it) {
+      return ghGet(it.dataset.path).then(function (j) {
+        var md = b64decode(j.content);
+        var kept = getBin(md).filter(function (t) { return drop.indexOf(t.toLowerCase()) === -1; });
+        return ghPut(it.dataset.path, setBin(md, kept), j.sha,
+          "Remove tags: " + it.dataset.path)
+          .then(function () { renderBinTags(it, kept); });
+      });
+    });
+  }
+
+  function bulkDelete() {
+    var n = selected.length;
+    var titles = selectedItems().slice(0, 5).map(function (it) {
+      return "• " + it.querySelector(".item-title").textContent.trim();
+    }).join("\n");
+    if (!confirm("Delete " + n + " page(s) from the repo?\n\n" + titles +
+                 (n > 5 ? "\n…and " + (n - 5) + " more" : "") +
+                 "\n\nThis removes the markdown file. Git history keeps a copy, " +
+                 "but the hosted media is not touched.")) return;
+
+    eachSelected("Deleted", function (it) {
+      return ghGet(it.dataset.path).then(function (j) {
+        return ghDelete(it.dataset.path, j.sha, "Delete page: " + it.dataset.path)
+          .then(function () { it.remove(); });
+      });
+    });
+  }
+
+  /* ---------- notes editor ---------- */
 
   function setStatus(el, msg, kind) {
     if (!el) return;
@@ -241,6 +602,7 @@
     var editBtn = root.querySelector(".js-edit");
     var saveBtn = root.querySelector(".js-save");
     var cancelBtn = root.querySelector(".js-cancel");
+    if (!editor || !editBtn) return;
     var loaded = false;
 
     editBtn.addEventListener("click", function () {
@@ -253,9 +615,7 @@
         textarea.value = currentNotes(b64decode(j.content));
         setStatus(status, "");
         textarea.focus();
-      }).catch(function (e) {
-        setStatus(status, e.message, "err");
-      });
+      }).catch(function (e) { setStatus(status, e.message, "err"); });
     });
 
     cancelBtn.addEventListener("click", function () {
@@ -268,7 +628,7 @@
       if (!loaded) { setStatus(status, "not loaded yet", "err"); return; }
       saveBtn.disabled = true;
       setStatus(status, "saving…");
-      // Re-read immediately before writing so a stale sha can't clobber an
+      // Re-read immediately before writing so a stale sha cannot clobber an
       // edit made elsewhere since this editor was opened.
       ghGet(path).then(function (j) {
         var md = b64decode(j.content);
@@ -280,30 +640,7 @@
         editBtn.style.display = "";
       }).catch(function (e) {
         setStatus(status, e.message, "err");
-      }).then(function () {
-        saveBtn.disabled = false;
-      });
-    });
-  }
-
-  /* ---------- search ---------- */
-
-  function wireSearch() {
-    var input = document.getElementById("search");
-    if (!input) return;
-    var cards = Array.prototype.slice.call(document.querySelectorAll("[data-search]"));
-    var count = document.getElementById("count");
-    var total = cards.length;
-
-    input.addEventListener("input", function () {
-      var q = input.value.trim().toLowerCase();
-      var shown = 0;
-      cards.forEach(function (c) {
-        var hit = !q || c.dataset.search.indexOf(q) !== -1;
-        c.style.display = hit ? "" : "none";
-        if (hit) shown++;
-      });
-      if (count) count.textContent = shown === total ? total + " pages" : shown + " of " + total;
+      }).then(function () { saveBtn.disabled = false; });
     });
   }
 
@@ -336,8 +673,8 @@
         refreshIdentity();
       });
 
-      var clear = dlg.querySelector("#token-clear");
-      if (clear) clear.addEventListener("click", function (e) {
+      var clr = dlg.querySelector("#token-clear");
+      if (clr) clr.addEventListener("click", function (e) {
         e.preventDefault();
         signOut();
         dlg.querySelector("#token-input").value = "";
@@ -349,7 +686,33 @@
     refreshIdentity();
     if (pendingNotice) openDialog();
 
+    paintTags();
+
+    document.querySelectorAll(".js-view").forEach(function (b) {
+      b.addEventListener("click", function () { setView(b.dataset.view); });
+    });
+    setView(localStorage.getItem(VIEW_KEY) === "details" ? "details" : "cards");
+
+    document.querySelectorAll(".chip").forEach(function (c) {
+      c.addEventListener("click", function () { toggleChip(c); });
+    });
+    var cf = document.getElementById("clear-filters");
+    if (cf) cf.addEventListener("click", clearFilters);
+
+    var search = document.getElementById("search");
+    if (search) search.addEventListener("input", applyFilter);
+
+    var grid = document.getElementById("grid");
+    if (grid) grid.addEventListener("click", onItemClick);
+
+    var m = { "sel-tag": bulkAddTags, "sel-untag": bulkRemoveTags,
+              "sel-delete": bulkDelete, "sel-clear": clearSelection };
+    Object.keys(m).forEach(function (id) {
+      var b = document.getElementById(id);
+      if (b) b.addEventListener("click", m[id]);
+    });
+
     document.querySelectorAll("[data-path]").forEach(wireEditor);
-    wireSearch();
+    applyFilter();
   });
 })();
