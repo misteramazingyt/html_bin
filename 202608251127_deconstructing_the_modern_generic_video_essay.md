@@ -2,6 +2,7 @@
 title: Deconstructing The Modern Generic Video Essay
 permalink: /202608251127_deconstructing_the_modern_generic_video_essay/
 tags: [Academic Humor, Societal Critique, Memetic Knowledge, Theory Explanation]
+bin: [Video "essays"]
 ---
 
 # Deconstructing The Modern Generic Video Essay
