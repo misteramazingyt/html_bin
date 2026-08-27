@@ -1,0 +1,22 @@
+<dialog id="tag-dialog">
+  <h2 id="tag-title">Add tags</h2>
+  <p id="tag-sub"></p>
+
+  <div class="token-field" id="token-field">
+    <span class="token-chips" id="token-chips"></span>
+    <input id="tag-input" type="text" placeholder="Type to filter or create a tag…"
+           autocomplete="off" spellcheck="false" aria-label="Tag name">
+  </div>
+
+  <div class="suggest" id="tag-suggest" role="listbox" aria-label="Existing tags"></div>
+
+  <p class="suggest-hint">
+    <b>Tab</b> adds the highlighted tag · <b>↑↓</b> to move · <b>Enter</b> saves ·
+    <b>Esc</b> cancels · <b>Backspace</b> on an empty box removes the last tag
+  </p>
+
+  <div class="dialog-actions">
+    <button class="btn" id="tag-cancel" type="button">Cancel</button>
+    <button class="btn btn-primary" id="tag-ok" type="button">OK</button>
+  </div>
+</dialog>

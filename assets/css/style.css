@@ -370,3 +370,102 @@ dialog input[type="password"], dialog input[type="text"] {
   .page h1 { font-size: 1.55rem; }
   .filter-label { min-width: 0; width: 100%; }
 }
+
+/* ---------- archive ---------- */
+
+/* Deliberately unobtrusive: the entry point only materialises when the
+   masthead is hovered, or when focused via the keyboard. */
+.archive-entry {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .18s ease;
+}
+.masthead:hover .archive-entry,
+.archive-entry:focus-visible,
+.archive-entry.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+.archive-entry.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
+}
+
+/* A clear signal that the view is showing archived pages, not the library. */
+body.archive-mode .masthead { border-bottom-color: var(--accent); }
+body.archive-mode .brand::after {
+  content: " archive";
+  color: var(--accent);
+  font-size: .78rem;
+  letter-spacing: .04em;
+}
+body.archive-mode .item { opacity: .82; }
+body.archive-mode .item:hover { opacity: 1; }
+
+/* ---------- tag picker ---------- */
+
+#tag-dialog { max-width: 560px; }
+
+.token-field {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
+  padding: 8px 10px; margin-bottom: 10px;
+  background: var(--surface-2);
+  border: 1px solid var(--border); border-radius: 8px;
+}
+.token-field:focus-within { outline: 2px solid var(--accent); outline-offset: -1px; }
+
+.token-chips { display: contents; }
+
+.token-chip {
+  --h: 210;
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 2px 4px 2px 9px; border-radius: 999px; font-size: .78rem; font-weight: 500;
+  background: hsl(var(--h) var(--chip-bg-s) var(--chip-bg-l));
+  color: hsl(var(--h) var(--chip-fg-s) var(--chip-fg-l));
+  border: 1px solid hsl(var(--h) var(--chip-bd-s) var(--chip-bd-l));
+}
+
+.token-x {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 16px; height: 16px; padding: 0; line-height: 1;
+  font-size: .82rem; cursor: pointer; color: inherit;
+  background: transparent; border: 0; border-radius: 999px; opacity: .65;
+}
+.token-x:hover { opacity: 1; background: hsl(var(--h) var(--chip-bd-s) var(--chip-bd-l)); }
+
+#tag-input {
+  flex: 1 1 130px; min-width: 110px; padding: 3px 2px; margin: 0;
+  font: inherit; font-size: .88rem; color: var(--text);
+  background: transparent; border: 0; outline: none;
+}
+
+/* One row that scrolls sideways, so a long vocabulary never wraps into a wall */
+.suggest {
+  display: flex; gap: 6px; align-items: center;
+  overflow-x: auto; overflow-y: hidden;
+  padding: 4px 2px 8px; min-height: 34px;
+  scrollbar-width: thin;
+}
+.suggest::-webkit-scrollbar { height: 6px; }
+.suggest::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
+
+.suggest-item {
+  --h: 210;
+  flex: 0 0 auto; padding: 3px 10px; border-radius: 999px; cursor: pointer;
+  font: inherit; font-size: .78rem; white-space: nowrap;
+  background: transparent;
+  border: 1px solid hsl(var(--h) var(--chip-bd-s) var(--chip-bd-l));
+  color: hsl(var(--h) var(--chip-fg-s) var(--chip-fg-l));
+}
+.suggest-item.active {
+  background: hsl(var(--h) var(--chip-bg-s) var(--chip-bg-l));
+  box-shadow: 0 0 0 2px hsl(var(--h) var(--chip-fg-s) var(--chip-fg-l)) inset;
+  font-weight: 600;
+}
+.suggest-item.is-new::before { content: "+ "; opacity: .7; }
+
+.suggest-empty { font-size: .78rem; color: var(--text-dim); font-style: italic; padding: 3px 2px; }
+
+.suggest-hint { font-size: .72rem; color: var(--text-dim); margin: 0 0 14px; }
+.suggest-hint b { font-weight: 600; color: var(--text); font-family: var(--mono); font-size: .95em; }

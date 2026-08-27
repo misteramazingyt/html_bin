@@ -17,5 +17,9 @@
     <span class="whoami" id="whoami" hidden></span>
     <button class="btn" id="signin-btn" title="Sign in with GitHub to edit" hidden>Sign in</button>
     <button class="btn" id="signout-btn" title="Sign out" hidden>Sign out</button>
+    {% if include.show_view %}
+      <button class="btn btn-sm archive-entry" id="archive-toggle"
+              title="Show archived pages">Archive</button>
+    {% endif %}
   </div>
 </header>

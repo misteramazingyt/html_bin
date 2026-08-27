@@ -59,6 +59,7 @@ permalink: /
     <span class="selbar-count"><b id="sel-count">0</b> selected</span>
     <button class="btn btn-sm btn-primary" id="sel-tag" type="button">Add tags…</button>
     <button class="btn btn-sm" id="sel-untag" type="button">Remove tags…</button>
+    <button class="btn btn-sm" id="sel-archive" type="button">Archive…</button>
     <button class="btn btn-sm btn-danger" id="sel-delete" type="button">Delete…</button>
     <button class="btn btn-sm" id="sel-clear" type="button">Clear selection</button>
     <span class="status" id="sel-status"></span>
@@ -113,6 +114,7 @@ permalink: /
     {% assign dy = stamp | slice: 6, 2 %}
 
     <article class="item" data-path="{{ p.path }}"
+             data-archived="{% if p.archived %}true{% else %}false{% endif %}"
              data-auto="{{ p.tags | join: '|' | escape }}"
              data-bin="{{ p.bin | join: '|' | escape }}"
              data-search="{{ p.title | downcase | escape }} {{ notes_text | downcase | escape }} {{ p.tags | join: ' ' | downcase | escape }} {{ p.bin | join: ' ' | downcase | escape }}">
@@ -168,6 +170,7 @@ permalink: /
   {% if note_pages.size == 0 %}<div class="empty">Nothing here yet.</div>{% endif %}
 </div>
 
+{% include tag-dialog.html %}
 {% include token-dialog.html %}
 <script src="{{ '/assets/js/app.js' | relative_url }}?v={{ site.time | date: '%s' }}"></script>
 </body>

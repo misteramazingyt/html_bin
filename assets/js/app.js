@@ -332,6 +332,36 @@
     return "---\n" + lines.join("\n") + "\n---\n" + fm.rest;
   }
 
+  /* ---------- archive flag ---------- */
+
+  function getArchived(md) {
+    var fm = splitFM(md);
+    if (!fm) return false;
+    var m = /^archived\s*:\s*(.*)$/m.exec(fm.body);
+    return !!m && /^(true|yes|1)$/i.test(m[1].trim());
+  }
+
+  function setArchived(md, on) {
+    var fm = splitFM(md);
+    if (!fm) return on ? "---\narchived: true\n---\n\n" + md : md;
+
+    var lines = fm.body.split("\n");
+    var idx = -1;
+    for (var i = 0; i < lines.length; i++) {
+      if (/^archived\s*:/.test(lines[i])) { idx = i; break; }
+    }
+
+    if (!on) {
+      if (idx !== -1) lines.splice(idx, 1);
+    } else if (idx !== -1) {
+      lines[idx] = "archived: true";
+    } else {
+      lines.push("archived: true");
+    }
+
+    return "---\n" + lines.join("\n") + "\n---\n" + fm.rest;
+  }
+
   /* ---------- notes body ---------- */
 
   function replaceNotes(md, notes) {
@@ -380,15 +410,39 @@
 
   var activeAuto = [];
   var activeBin = [];
+  var archiveMode = false;   // deliberately not persisted: leaving it on would
+                             // make the whole library look empty on next visit
+
+  function isArchived(it) { return it.dataset.archived === "true"; }
 
   function applyFilter() {
     var input = document.getElementById("search");
     var q = input ? input.value.trim().toLowerCase() : "";
     var items = document.querySelectorAll(".item");
-    var shown = 0;
+    var shown = 0, eligible = 0;
+
+    // A tag's chip is shown only while something in the current mode still
+    // carries it, so archiving every page with a tag retires the tag too.
+    var liveTags = {};
+    items.forEach(function (it) {
+      if (isArchived(it) !== archiveMode) return;
+      eligible++;
+      listOf(it, "bin").forEach(function (t) { liveTags[t.toLowerCase()] = true; });
+    });
+
+    document.querySelectorAll(".chip-bin").forEach(function (c) {
+      var gone = !liveTags[(c.dataset.tag || "").toLowerCase()];
+      c.hidden = gone;
+      if (gone && c.classList.contains("on")) {           // drop a filter that no longer exists
+        c.classList.remove("on");
+        var i = activeBin.indexOf(c.dataset.tag);
+        if (i !== -1) activeBin.splice(i, 1);
+      }
+    });
 
     items.forEach(function (it) {
-      var hit = !q || (it.dataset.search || "").indexOf(q) !== -1;
+      var hit = isArchived(it) === archiveMode;
+      if (hit) hit = !q || (it.dataset.search || "").indexOf(q) !== -1;
 
       // Chips narrow rather than widen: every selected tag must be present.
       if (hit && activeAuto.length) {
@@ -405,9 +459,9 @@
     });
 
     var count = document.getElementById("count");
-    if (count) count.textContent = (shown === items.length)
-      ? items.length + " pages"
-      : shown + " of " + items.length;
+    if (count) count.textContent = (shown === eligible)
+      ? eligible + (archiveMode ? " archived" : " pages")
+      : shown + " of " + eligible;
 
     var none = document.getElementById("no-results");
     if (none) none.hidden = shown !== 0 || items.length === 0;
@@ -526,6 +580,181 @@
     group.appendChild(b);
   }
 
+  /* ---------- tag picker ----------
+   * Replaces window.prompt: a token field with live-filtered suggestions drawn
+   * from the tags already in use, so the vocabulary converges instead of
+   * sprouting near-duplicates from typos.
+   *
+   * Tab takes the highlighted suggestion, up/down (or left/right, since the
+   * list scrolls sideways) moves the highlight, Enter or OK commits, Esc or
+   * Cancel aborts. Resolves to an array of tags, or null if cancelled.
+   */
+
+  function allKnownTags() {
+    var seen = {}, out = [];
+    document.querySelectorAll(".item").forEach(function (it) {
+      listOf(it, "bin").forEach(function (t) {
+        var k = t.toLowerCase();
+        if (!seen[k]) { seen[k] = true; out.push(t); }
+      });
+    });
+    return out.sort(function (a, b) { return a.localeCompare(b); });
+  }
+
+  function openTagPicker(opts) {
+    var dlg = document.getElementById("tag-dialog");
+    if (!dlg) return Promise.resolve(null);
+
+    var titleEl = document.getElementById("tag-title");
+    var subEl = document.getElementById("tag-sub");
+    var chipsEl = document.getElementById("token-chips");
+    var input = document.getElementById("tag-input");
+    var listEl = document.getElementById("tag-suggest");
+
+    var chosen = (opts.initial || []).slice();
+    var pool = opts.pool || [];
+    var shown = [];
+    var active = 0;
+
+    titleEl.textContent = opts.title || "Tags";
+    subEl.textContent = opts.sub || "";
+    input.value = "";
+
+    function has(t) {
+      return chosen.some(function (c) { return c.toLowerCase() === t.toLowerCase(); });
+    }
+
+    function renderChips() {
+      chipsEl.innerHTML = "";
+      chosen.forEach(function (t, i) {
+        var chip = document.createElement("span");
+        chip.className = "token-chip";
+        chip.style.setProperty("--h", hueFor(t));
+        chip.appendChild(document.createTextNode(t));
+        var x = document.createElement("button");
+        x.type = "button";
+        x.className = "token-x";
+        x.setAttribute("aria-label", "Remove " + t);
+        x.textContent = "×";
+        x.addEventListener("click", function (e) {
+          e.preventDefault();
+          chosen.splice(i, 1);
+          renderChips(); renderList();
+          input.focus();
+        });
+        chip.appendChild(x);
+        chipsEl.appendChild(chip);
+      });
+    }
+
+    function renderList() {
+      var q = input.value.trim().toLowerCase();
+      shown = pool.filter(function (t) {
+        return !has(t) && (!q || t.toLowerCase().indexOf(q) !== -1);
+      });
+      // Offer the typed text itself when it is not already an exact match.
+      var raw = input.value.trim();
+      if (raw && !pool.some(function (t) { return t.toLowerCase() === raw.toLowerCase(); }) && !has(raw)) {
+        shown = [raw].concat(shown);
+      }
+      if (active >= shown.length) active = Math.max(0, shown.length - 1);
+
+      listEl.innerHTML = "";
+      if (!shown.length) {
+        var none = document.createElement("span");
+        none.className = "suggest-empty";
+        none.textContent = pool.length ? "no matching tags" : "no tags yet — type to create one";
+        listEl.appendChild(none);
+        return;
+      }
+      shown.forEach(function (t, i) {
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "suggest-item" + (i === active ? " active" : "");
+        b.setAttribute("role", "option");
+        b.style.setProperty("--h", hueFor(t));
+        b.textContent = t;
+        if (i === 0 && t === input.value.trim() && !pool.some(function (p) {
+          return p.toLowerCase() === t.toLowerCase();
+        })) b.classList.add("is-new");
+        b.addEventListener("click", function (e) { e.preventDefault(); add(t); });
+        listEl.appendChild(b);
+      });
+      var act = listEl.querySelector(".suggest-item.active");
+      if (act) act.scrollIntoView({ block: "nearest", inline: "nearest" });
+    }
+
+    function add(t) {
+      t = String(t || "").trim();
+      if (!t || has(t)) { input.value = ""; renderList(); return; }
+      chosen.push(t);
+      input.value = "";
+      active = 0;
+      renderChips(); renderList();
+      input.focus();
+    }
+
+    function move(d) {
+      if (!shown.length) return;
+      active = (active + d + shown.length) % shown.length;
+      renderList();
+    }
+
+    var settle;
+    function finish(val) {
+      input.removeEventListener("keydown", onKey);
+      input.removeEventListener("input", onInput);
+      dlg.removeEventListener("close", onClose);
+      okBtn.removeEventListener("click", onOk);
+      cancelBtn.removeEventListener("click", onCancel);
+      if (dlg.open) dlg.close();
+      settle(val);
+    }
+
+    function commit() {
+      // Never silently drop half-typed text.
+      var raw = input.value.trim();
+      if (raw) add(shown.length && active < shown.length ? shown[active] : raw);
+      finish(chosen.slice());
+    }
+
+    function onKey(e) {
+      if (e.key === "Tab") {
+        if (shown.length) { e.preventDefault(); add(shown[active]); }
+      } else if (e.key === "ArrowDown" || e.key === "ArrowRight") {
+        e.preventDefault(); move(1);
+      } else if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
+        e.preventDefault(); move(-1);
+      } else if (e.key === "Enter") {
+        e.preventDefault(); commit();
+      } else if (e.key === "Backspace" && !input.value && chosen.length) {
+        e.preventDefault();
+        chosen.pop(); renderChips(); renderList();
+      }
+    }
+
+    function onInput() { active = 0; renderList(); }
+    function onOk(e) { e.preventDefault(); commit(); }
+    function onCancel(e) { e.preventDefault(); finish(null); }
+    function onClose() { finish(null); }          // covers Esc
+
+    var okBtn = document.getElementById("tag-ok");
+    var cancelBtn = document.getElementById("tag-cancel");
+
+    input.addEventListener("keydown", onKey);
+    input.addEventListener("input", onInput);
+    okBtn.addEventListener("click", onOk);
+    cancelBtn.addEventListener("click", onCancel);
+    dlg.addEventListener("close", onClose);
+
+    renderChips();
+    renderList();
+    dlg.showModal();
+    setTimeout(function () { input.focus(); }, 0);
+
+    return new Promise(function (resolve) { settle = resolve; });
+  }
+
   /* ---------- bulk operations ---------- */
 
   function selStatus(msg, kind) {
@@ -541,9 +770,8 @@
 
   // Runs one file at a time: the contents API is per-file and needs a fresh
   // sha for each write, and serialising keeps the failure report legible.
-  function eachSelected(label, fn) {
+  function runOver(items, label, fn, onDone) {
     if (!getToken()) { openDialog(); return; }
-    var items = selectedItems();
     if (!items.length) return;
 
     var done = 0, failed = [];
@@ -555,6 +783,7 @@
         selStatus(label + ": " + done + " ok" +
           (failed.length ? ", " + failed.length + " failed — " + failed[0] : "") +
           " — live in ~1 min", failed.length ? "err" : "ok");
+        if (onDone) onDone();
         return;
       }
       selStatus(label + " " + (i + 1) + "/" + items.length + "…");
@@ -566,20 +795,32 @@
     step(0);
   }
 
+  function eachSelected(label, fn) {
+    runOver(selectedItems(), label, fn);
+  }
+
   function setBusy(on) {
-    ["sel-tag", "sel-untag", "sel-delete"].forEach(function (id) {
+    ["sel-tag", "sel-untag", "sel-archive", "sel-delete"].forEach(function (id) {
       var b = document.getElementById(id);
       if (b) b.disabled = on;
     });
   }
 
   function bulkAddTags() {
-    var raw = prompt("Add tags to " + selected.length + " page(s).\nComma-separated:");
-    if (raw === null) return;
-    var add = parseTagInput(raw);
-    if (!add.length) return;
-    add.forEach(ensureChip);
+    if (!getToken()) { openDialog(); return; }
+    var n = selected.length;
+    openTagPicker({
+      title: "Add tags",
+      sub: "Applied to " + n + " page" + (n === 1 ? "" : "s") + ".",
+      pool: allKnownTags()
+    }).then(function (add) {
+      if (!add || !add.length) return;
+      add.forEach(ensureChip);
+      doAddTags(add);
+    });
+  }
 
+  function doAddTags(add) {
     eachSelected("Tagged", function (it) {
       return ghGet(it.dataset.path).then(function (j) {
         var md = b64decode(j.content);
@@ -592,11 +833,27 @@
   }
 
   function bulkRemoveTags() {
-    var raw = prompt("Remove tags from " + selected.length + " page(s).\nComma-separated:");
-    if (raw === null) return;
-    var drop = parseTagInput(raw).map(function (t) { return t.toLowerCase(); });
-    if (!drop.length) return;
+    if (!getToken()) { openDialog(); return; }
+    var n = selected.length;
+    // Offer only what the selection actually carries — you cannot remove a tag
+    // that is not there.
+    var onSelection = {};
+    selectedItems().forEach(function (it) {
+      listOf(it, "bin").forEach(function (t) { onSelection[t.toLowerCase()] = t; });
+    });
+    var pool = Object.keys(onSelection).map(function (k) { return onSelection[k]; }).sort();
 
+    openTagPicker({
+      title: "Remove tags",
+      sub: "Removed from " + n + " page" + (n === 1 ? "" : "s") + ".",
+      pool: pool
+    }).then(function (picked) {
+      if (!picked || !picked.length) return;
+      doRemoveTags(picked.map(function (t) { return t.toLowerCase(); }));
+    });
+  }
+
+  function doRemoveTags(drop) {
     eachSelected("Untagged", function (it) {
       return ghGet(it.dataset.path).then(function (j) {
         var md = b64decode(j.content);
@@ -605,6 +862,49 @@
           "Remove tags: " + it.dataset.path)
           .then(function () { renderBinTags(it, kept); });
       });
+    });
+  }
+
+  /* ---------- archive ----------
+   * With tag chips active this deliberately acts on every page carrying those
+   * tags, not just the selected ones — archiving a tag should retire the whole
+   * tag, and the chip then disappears on its own because no live page has it.
+   */
+
+  function archiveTargets() {
+    if (activeBin.length || activeAuto.length) {
+      return Array.prototype.filter.call(document.querySelectorAll(".item"), function (it) {
+        return !it.hidden;
+      });
+    }
+    return selectedItems();
+  }
+
+  function bulkArchive(on) {
+    var items = archiveTargets();
+    if (!items.length) return;
+
+    var byTag = activeBin.length ? ' carrying [' + activeBin.join(", ") + ']' : "";
+    var verb = on ? "Archive" : "Restore";
+    if (!confirm(verb + " " + items.length + " page(s)" + byTag + "?\n\n" +
+                 (on ? "They stay in the repo and keep working URLs, but drop out of the "
+                     + "main view — and any tag left with no live pages disappears with them."
+                     : "They return to the main view."))) return;
+
+    // eachSelected walks the selection; archive may act on a filtered set, so
+    // drive the same machinery over an explicit list instead.
+    runOver(items, on ? "Archived" : "Restored", function (it) {
+      return ghGet(it.dataset.path).then(function (j) {
+        var md = b64decode(j.content);
+        return ghPut(it.dataset.path, setArchived(md, on), j.sha,
+          (on ? "Archive: " : "Restore: ") + it.dataset.path)
+          .then(function () {
+            it.dataset.archived = on ? "true" : "false";
+          });
+      });
+    }, function () {
+      clearSelection();
+      applyFilter();
     });
   }
 
@@ -746,7 +1046,20 @@
     var grid = document.getElementById("grid");
     if (grid) grid.addEventListener("click", onItemClick);
 
+    var at = document.getElementById("archive-toggle");
+    if (at) at.addEventListener("click", function () {
+      archiveMode = !archiveMode;
+      document.body.classList.toggle("archive-mode", archiveMode);
+      at.textContent = archiveMode ? "Leave archive" : "Archive";
+      at.classList.toggle("active", archiveMode);
+      var sa = document.getElementById("sel-archive");
+      if (sa) sa.textContent = archiveMode ? "Restore…" : "Archive…";
+      clearSelection();
+      applyFilter();
+    });
+
     var m = { "sel-tag": bulkAddTags, "sel-untag": bulkRemoveTags,
+              "sel-archive": function () { bulkArchive(!archiveMode); },
               "sel-delete": bulkDelete, "sel-clear": clearSelection };
     Object.keys(m).forEach(function (id) {
       var b = document.getElementById(id);
