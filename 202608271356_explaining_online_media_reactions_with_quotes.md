@@ -2,6 +2,7 @@
 title: Explaining Online Media Reactions With Quotes
 permalink: /202608271356_explaining_online_media_reactions_with_quotes/
 tags: [Social Media, Conceptual Diagram, Feeling Overwhelmed, Memetic Knowledge]
+bin: ["Video \"essays\""]
 ---
 
 # Explaining Online Media Reactions With Quotes
