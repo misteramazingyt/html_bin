@@ -164,6 +164,8 @@ a { color: var(--accent); }
 /* ---------- filter bar ---------- */
 
 .filters { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+/* no user tags yet means no filter bar at all, rather than an empty strip */
+.filters:not(:has(.chip)) { display: none; }
 
 .filter-group { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 

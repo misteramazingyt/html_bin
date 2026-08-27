@@ -9,7 +9,7 @@ permalink: /
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>html_bin</title>
-  <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+  <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}?v={{ site.time | date: '%s' }}">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='13' font-size='13'>🗃️</text></svg>">
 </head>
 <body>
@@ -42,22 +42,10 @@ permalink: /
   <div class="filters" id="filters">
     {% if bin_uniq.size > 0 %}
       <div class="filter-group">
-        <span class="filter-label">My tags</span>
+        <span class="filter-label">Tags</span>
         {% for t in bin_uniq %}
           {% assign n = bin_all | where_exp: "x", "x == t" | size %}
           <button class="chip chip-bin" type="button" data-filter="bin" data-tag="{{ t | escape }}">
-            {{ t }}<span class="chip-n">{{ n }}</span>
-          </button>
-        {% endfor %}
-      </div>
-    {% endif %}
-
-    {% if auto_uniq.size > 0 %}
-      <div class="filter-group">
-        <span class="filter-label">Auto</span>
-        {% for t in auto_uniq %}
-          {% assign n = auto_all | where_exp: "x", "x == t" | size %}
-          <button class="chip chip-auto" type="button" data-filter="auto" data-tag="{{ t | escape }}">
             {{ t }}<span class="chip-n">{{ n }}</span>
           </button>
         {% endfor %}
@@ -181,6 +169,6 @@ permalink: /
 </div>
 
 {% include token-dialog.html %}
-<script src="{{ '/assets/js/app.js' | relative_url }}"></script>
+<script src="{{ '/assets/js/app.js' | relative_url }}?v={{ site.time | date: '%s' }}"></script>
 </body>
 </html>
