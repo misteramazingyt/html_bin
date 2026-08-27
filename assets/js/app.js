@@ -207,13 +207,19 @@
       encodeURIComponent(path).replace(/%2F/g, "/");
   }
 
+  // cache: no-store is load-bearing. GitHub returns Cache-Control: private,
+  // max-age=60 on authenticated reads, so a second edit within a minute was
+  // served the pre-write body — and its stale sha — which the API then rejected
+  // with "<path> does not match <sha>".
   function ghGet(path) {
-    return fetch(contentsURL(path) + "?ref=" + encodeURIComponent(BRANCH), { headers: ghHeaders() })
-      .then(function (r) {
-        if (r.status === 401) { signOut(); throw new Error("signed out — sign in again"); }
-        if (!r.ok) throw new Error("read failed (" + r.status + ")");
-        return r.json();
-      });
+    return fetch(contentsURL(path) + "?ref=" + encodeURIComponent(BRANCH), {
+      headers: ghHeaders(),
+      cache: "no-store"
+    }).then(function (r) {
+      if (r.status === 401) { signOut(); throw new Error("signed out — sign in again"); }
+      if (!r.ok) throw new Error("read failed (" + r.status + ")");
+      return r.json();
+    });
   }
 
   function ghPut(path, text, sha, message) {
@@ -253,17 +259,52 @@
     return { body: m[1], rest: md.slice(m[0].length) };
   }
 
+  // A YAML flow sequence, tolerant of both quoted and bare entries. Splitting
+  // on commas would corrupt any tag containing one, and treating a quote as a
+  // delimiter mid-value would mangle a bare tag like: Video "essays".
+  function parseFlowSeq(v) {
+    v = String(v).trim();
+    if (v.charAt(0) === "[") v = v.slice(1);
+    if (v.charAt(v.length - 1) === "]") v = v.slice(0, -1);
+
+    var out = [], i = 0;
+    while (i < v.length) {
+      while (i < v.length && /[\s,]/.test(v.charAt(i))) i++;
+      if (i >= v.length) break;
+
+      var c = v.charAt(i), val = "";
+      if (c === '"' || c === "'") {
+        var q = c; i++;
+        while (i < v.length && v.charAt(i) !== q) {
+          if (q === '"' && v.charAt(i) === "\\" && i + 1 < v.length) { val += v.charAt(i + 1); i += 2; }
+          else { val += v.charAt(i); i++; }
+        }
+        i++;                                  // closing quote
+      } else {
+        while (i < v.length && v.charAt(i) !== ",") { val += v.charAt(i); i++; }
+        val = val.trim();
+      }
+      if (val) out.push(val);
+    }
+    return out;
+  }
+
+  // Always emit quoted, so commas, colons, brackets and quotes in a tag are
+  // never ambiguous to the YAML parser.
+  function yamlTag(t) {
+    return '"' + String(t).replace(/\\/g, "\\\\").replace(/"/g, '\\"') + '"';
+  }
+
   function getBin(md) {
     var fm = splitFM(md);
     if (!fm) return [];
     var m = /^bin\s*:\s*(.*)$/m.exec(fm.body);
     if (!m) return [];
-    var v = m[1].trim().replace(/^\[/, "").replace(/\]$/, "");
-    return v.split(",").map(function (t) { return t.trim(); }).filter(Boolean);
+    return parseFlowSeq(m[1]);
   }
 
   function setBin(md, tags) {
-    var line = "bin: [" + tags.join(", ") + "]";
+    var line = "bin: [" + tags.map(yamlTag).join(", ") + "]";
     var fm = splitFM(md);
 
     if (!fm) {
