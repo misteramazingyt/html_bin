@@ -2,6 +2,7 @@
 title: The Impersonal Academic Video Essay Trope
 permalink: /202608161408_the_impersonal_academic_video_essay_trope/
 tags: [Academic Humor, Societal Critique, Memetic Knowledge]
+bin: [Video "essays"]
 ---
 
 # The Impersonal Academic Video Essay Trope
