@@ -2,6 +2,7 @@
 title: Common Tropes Of YouTube Video Essays
 permalink: /202608271312_common_tropes_of_youtube_video_essays/
 tags: [Social Media, Societal Critique, Everyday Humor, Memetic Knowledge]
+bin: ["Video \"essays\""]
 ---
 
 # Common Tropes Of YouTube Video Essays
