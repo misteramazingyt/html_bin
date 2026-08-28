@@ -2,6 +2,7 @@
 title: Content Creator Explains Social Media Engagement Strategies
 permalink: /202608270155_content_creator_explains_social_media_engagement_strategies/
 tags: [Economics, Theory Explanation, Social Construct, Memetic Knowledge]
+bin: ["Strategy"]
 ---
 
 # Content Creator Explains Social Media Engagement Strategies
