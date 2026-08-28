@@ -2,6 +2,7 @@
 title: Man Presents List of 40 Proven Content Formats
 permalink: /202608281901_man_presents_list_of_40_proven_content_formats/
 tags: [Social Media, Video Essay Culture, Theory Explanation, Conceptual Explanation]
+bin: ["Strategy"]
 ---
 
 # Man Presents List of 40 Proven Content Formats
