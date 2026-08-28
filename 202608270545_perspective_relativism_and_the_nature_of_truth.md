@@ -2,6 +2,7 @@
 title: Perspective, Relativism, and the Nature of Truth
 permalink: /202608270545_perspective_relativism_and_the_nature_of_truth/
 tags: [Epistemology, Philosophical Concepts, Academic Humor, Theory Explanation]
+archived: true
 ---
 
 # Perspective, Relativism, and the Nature of Truth
