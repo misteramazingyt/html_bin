@@ -2,6 +2,7 @@
 title: Esoteric Wisdom Versus Physical Effort
 permalink: /202608280405_esoteric_wisdom_versus_physical_effort/
 tags: [Esoteric Spirituality, Everyday Humor, Societal Critique, Self-Organization]
+bin: ["Laundry"]
 ---
 
 # Esoteric Wisdom Versus Physical Effort
