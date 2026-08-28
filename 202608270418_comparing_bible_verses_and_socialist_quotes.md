@@ -2,6 +2,7 @@
 title: Comparing Bible Verses And Socialist Quotes
 permalink: /202608270418_comparing_bible_verses_and_socialist_quotes/
 tags: [Christian Theology, Ethics, Societal Critique, Philosophical Concepts]
+bin: ["Strategy"]
 ---
 
 # Comparing Bible Verses And Socialist Quotes
