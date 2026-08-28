@@ -2,6 +2,7 @@
 title: Esoteric Wisdom Does Not Fold Laundry For You
 permalink: /202608280403_esoteric_wisdom_does_not_fold_laundry_for_you/
 tags: [Esoteric Spirituality, Conceptual Shift, Academic Humor]
+bin: ["Laundry"]
 ---
 
 # Esoteric Wisdom Does Not Fold Laundry For You
