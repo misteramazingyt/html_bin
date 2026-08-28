@@ -2,6 +2,7 @@
 title: Content Creation Lessons From Mr. Beast's Success
 permalink: /202608271708_content_creation_lessons_from_mr_beasts_success/
 tags: [Social Media, Technological Impact, Theory Explanation, Memetic Knowledge]
+bin: ["Strategy"]
 ---
 
 # Content Creation Lessons From Mr. Beast's Success
