@@ -2,6 +2,7 @@
 title: Guide To The Viral Yap Framework
 permalink: /202608270146_guide_to_the_viral_yap_framework/
 tags: [Conceptual Explanation, Memetic Knowledge, Content Creation Strategy, Systems Theory]
+bin: ["Strategy"]
 ---
 
 # Guide To The Viral Yap Framework
