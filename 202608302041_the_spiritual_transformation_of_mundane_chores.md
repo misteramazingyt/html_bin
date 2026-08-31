@@ -2,6 +2,7 @@
 title: The Spiritual Transformation of Mundane Chores
 permalink: /202608302041_the_spiritual_transformation_of_mundane_chores/
 tags: [Conceptual Shift, Everyday Humor, Memetic Knowledge, Religious Philosophy]
+archived: true
 ---
 
 # The Spiritual Transformation of Mundane Chores
