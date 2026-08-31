@@ -3,6 +3,7 @@ title: Esoteric Wisdom Versus Daily Chores
 permalink: /202608280404_esoteric_wisdom_versus_daily_chores/
 tags: [Esoteric Spirituality, Everyday Humor, Practical Philosophy, Societal Critique]
 bin: ["Laundry"]
+archived: true
 ---
 
 # Esoteric Wisdom Versus Daily Chores
