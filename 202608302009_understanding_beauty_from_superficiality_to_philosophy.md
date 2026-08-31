@@ -2,6 +2,7 @@
 title: Understanding Beauty From Superficiality To Philosophy
 permalink: /202608302009_understanding_beauty_from_superficiality_to_philosophy/
 tags: [Philosophical Concepts, Conceptual Explanation, Platonic Philosophy, Video Essay Culture]
+archived: true
 ---
 
 # Understanding Beauty From Superficiality To Philosophy
