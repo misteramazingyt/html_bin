@@ -2,6 +2,7 @@
 title: Nietzsche's God Is Dead Misinterpretation And Reality
 permalink: /202608302039_nietzsches_god_is_dead_misinterpretation_and_reality/
 tags: [Philosophical Concepts, Existentialism, Intellectual History, Academic Humor]
+archived: true
 ---
 
 # Nietzsche's God Is Dead Misinterpretation And Reality
