@@ -2,6 +2,7 @@
 title: Exploring the Vintage Panasonic D-Snap SV-AV50
 permalink: /202608310110_exploring_the_vintage_panasonic_d-snap_sv-av50/
 tags: [Technological Impact, Nostalgia, Retro Technology]
+bin: ["Strategy"]
 ---
 
 # Exploring the Vintage Panasonic D-Snap SV-AV50
