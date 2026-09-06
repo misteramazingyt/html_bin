@@ -2,6 +2,7 @@
 title: Cartoon Duo Performs Song About Sleepless Love
 permalink: /202608310515_cartoon_duo_performs_song_about_sleepless_love/
 tags: [Feeling Overwhelmed, Mental Health, Conceptual Explanation, Video Essay Culture]
+bin: ["Strategy"]
 ---
 
 # Cartoon Duo Performs Song About Sleepless Love
