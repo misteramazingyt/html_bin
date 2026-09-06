@@ -2,6 +2,7 @@
 title: Content Creator Shares Strategies For Brand Deals
 permalink: /202608310503_content_creator_shares_strategies_for_brand_deals/
 tags: [Economics, Social Media, Content Creation, Creative Freedom]
+bin: ["Strategy"]
 ---
 
 # Content Creator Shares Strategies For Brand Deals
