@@ -2,6 +2,7 @@
 title: The Unhappiness Of Cultural Consumption
 permalink: /202608280347_the_unhappiness_of_cultural_consumption/
 tags: [Societal Critique, Existentialism, Economics]
+archived: true
 ---
 
 # The Unhappiness Of Cultural Consumption
