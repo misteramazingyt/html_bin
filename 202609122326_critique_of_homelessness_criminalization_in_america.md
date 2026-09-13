@@ -2,7 +2,7 @@
 title: Critique Of Homelessness Criminalization In America
 permalink: /202609122326_critique_of_homelessness_criminalization_in_america/
 tags: [Societal Critique, Economics, Moral Philosophy, Political Discourse]
-bin: ["meme", "from-bookmarks"]
+bin: ["To Respond"]
 ---
 
 # Critique Of Homelessness Criminalization In America
