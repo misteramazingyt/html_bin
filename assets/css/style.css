@@ -537,3 +537,23 @@ body.dragging-chip .filter-group {
 .seg-opt.on {
   background: var(--accent-soft); color: var(--accent); font-weight: 600;
 }
+
+/* ---------- excluded tags (alt-click) ----------
+ * A resting .chip-bin already carries its tag's hue on the border and text, so
+ * dropping to neutral *and* translucent is what separates "excluded" from
+ * "simply not selected" — greying alone would look like an ordinary chip.
+ * The selector is .chip.chip-excluded so it outranks .chip-bin without
+ * resorting to !important.
+ */
+
+.chip.chip-excluded,
+.chip.chip-excluded:hover {
+  opacity: .45;
+  background: transparent;
+  border-color: var(--border);
+  border-style: dashed;
+  color: var(--text-dim);
+  font-weight: 400;
+}
+
+.chip.chip-excluded .chip-n { opacity: .5; }

@@ -410,6 +410,7 @@
 
   var activeAuto = [];
   var activeBin = [];
+  var excludedBin = [];      // alt-clicked: hide anything carrying these
   var archiveMode = false;   // deliberately not persisted: leaving it on would
                              // make the whole library look empty on next visit
 
@@ -438,6 +439,11 @@
         var i = activeBin.indexOf(c.dataset.tag);
         if (i !== -1) activeBin.splice(i, 1);
       }
+      if (gone && c.classList.contains("chip-excluded")) {
+        c.classList.remove("chip-excluded");
+        var x = excludedBin.indexOf(c.dataset.tag);
+        if (x !== -1) excludedBin.splice(x, 1);
+      }
     });
 
     items.forEach(function (it) {
@@ -454,6 +460,13 @@
         hit = activeBin.every(function (t) { return b.indexOf(t.toLowerCase()) !== -1; });
       }
 
+      // One excluded tag removes the item however well it matches otherwise,
+      // so "everything tagged X, minus Y" is two clicks.
+      if (hit && excludedBin.length) {
+        var x = listOf(it, "bin").map(function (s) { return s.toLowerCase(); });
+        hit = !excludedBin.some(function (t) { return x.indexOf(t.toLowerCase()) !== -1; });
+      }
+
       it.hidden = !hit;
       if (hit) shown++;
     });
@@ -467,7 +480,7 @@
     if (none) none.hidden = shown !== 0 || items.length === 0;
 
     var clear = document.getElementById("clear-filters");
-    if (clear) clear.hidden = !(activeAuto.length || activeBin.length);
+    if (clear) clear.hidden = !(activeAuto.length || activeBin.length || excludedBin.length);
   }
 
   function toggleChip(btn) {
@@ -479,10 +492,31 @@
     applyFilter();
   }
 
+  // Alt-click. Deliberately not persisted, for the same reason archive mode is
+  // not: a tag hidden in a previous session would silently shrink the library
+  // with nothing on screen to explain it.
+  function toggleExclude(btn) {
+    var tag = btn.dataset.tag;
+    var i = excludedBin.indexOf(tag);
+    if (i === -1) {
+      excludedBin.push(tag);
+      var j = activeBin.indexOf(tag);            // cannot require and exclude the same tag
+      if (j !== -1) { activeBin.splice(j, 1); btn.classList.remove("on"); }
+    } else {
+      excludedBin.splice(i, 1);
+    }
+    btn.classList.toggle("chip-excluded", i === -1);
+    applyFilter();
+  }
+
   function clearFilters() {
     activeAuto = [];
     activeBin = [];
+    excludedBin = [];
     document.querySelectorAll(".chip.on").forEach(function (c) { c.classList.remove("on"); });
+    document.querySelectorAll(".chip-excluded").forEach(function (c) {
+      c.classList.remove("chip-excluded");
+    });
     applyFilter();
   }
 
@@ -1341,7 +1375,16 @@
     // Ctrl/Cmd-click edits the chip's category instead of filtering by it —
     // the same modifier that selects a card, rather than a new gesture to learn.
     document.querySelectorAll(".chip").forEach(function (c) {
+      if (c.classList.contains("chip-bin")) {
+        c.title = "Click to filter · Alt-click to hide · Ctrl-click to change category";
+      }
       c.addEventListener("click", function (e) {
+        if (e.altKey && c.classList.contains("chip-bin")) {
+          e.preventDefault();
+          e.stopPropagation();
+          toggleExclude(c);
+          return;
+        }
         if ((e.ctrlKey || e.metaKey) && c.classList.contains("chip-bin")) {
           e.preventDefault();
           e.stopPropagation();
