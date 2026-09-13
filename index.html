@@ -39,13 +39,49 @@ permalink: /
 
 <div class="wrap">
 
+  {%- comment -%}
+    Tags split across two rows by category. _data/tag_meta.yml names only the
+    metadata ones, so anything unlisted falls through to Content and a new tag
+    needs no entry. Matching is case-insensitive, which is why the list is
+    downcased once here rather than compared as written.
+  {%- endcomment -%}
+  {% assign meta_names = site.data.tag_meta.meta %}
+  {% assign meta_lc = "" | split: "" %}
+  {% for m in meta_names %}
+    {% assign ml = m | downcase %}
+    {% assign meta_lc = meta_lc | push: ml %}
+  {% endfor %}
+
+  {% assign content_tags = "" | split: "" %}
+  {% assign metadata_tags = "" | split: "" %}
+  {% for t in bin_uniq %}
+    {% assign tl = t | downcase %}
+    {% if meta_lc contains tl %}
+      {% assign metadata_tags = metadata_tags | push: t %}
+    {% else %}
+      {% assign content_tags = content_tags | push: t %}
+    {% endif %}
+  {% endfor %}
+
   <div class="filters" id="filters">
     {% if bin_uniq.size > 0 %}
-      <div class="filter-group">
-        <span class="filter-label">Tags</span>
-        {% for t in bin_uniq %}
+      <div class="filter-group" id="group-content" data-cat="content">
+        <span class="filter-label">Content</span>
+        {% for t in content_tags %}
           {% assign n = bin_all | where_exp: "x", "x == t" | size %}
-          <button class="chip chip-bin" type="button" data-filter="bin" data-tag="{{ t | escape }}">
+          <button class="chip chip-bin" type="button" draggable="true"
+                  data-filter="bin" data-cat="content" data-tag="{{ t | escape }}">
+            {{ t }}<span class="chip-n">{{ n }}</span>
+          </button>
+        {% endfor %}
+      </div>
+
+      <div class="filter-group" id="group-meta" data-cat="meta">
+        <span class="filter-label">Metadata</span>
+        {% for t in metadata_tags %}
+          {% assign n = bin_all | where_exp: "x", "x == t" | size %}
+          <button class="chip chip-bin" type="button" draggable="true"
+                  data-filter="bin" data-cat="meta" data-tag="{{ t | escape }}">
             {{ t }}<span class="chip-n">{{ n }}</span>
           </button>
         {% endfor %}
@@ -171,6 +207,7 @@ permalink: /
 </div>
 
 {% include tag-dialog.html %}
+{% include tag-cat-dialog.html %}
 {% include token-dialog.html %}
 <script src="{{ '/assets/js/app.js' | relative_url }}?v={{ site.time | date: '%s' }}"></script>
 </body>

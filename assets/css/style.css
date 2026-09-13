@@ -469,3 +469,71 @@ body.archive-mode .item:hover { opacity: 1; }
 
 .suggest-hint { font-size: .72rem; color: var(--text-dim); margin: 0 0 14px; }
 .suggest-hint b { font-weight: 600; color: var(--text); font-family: var(--mono); font-size: .95em; }
+
+/* ---------- tag categories ----------
+ * Content and Metadata are two .filter-group rows. An empty row would otherwise
+ * be a bare label, so it is hidden — except while a chip is being dragged, when
+ * it has to exist to be dropped into.
+ */
+
+.filter-group:not(:has(.chip:not([hidden]))) { display: none; }
+body.dragging-chip .filter-group { display: flex; }
+
+body.dragging-chip .filter-group {
+  outline: 1px dashed var(--border);
+  outline-offset: 3px;
+  border-radius: 8px;
+  min-height: 26px;
+}
+
+.filter-group.drop-over {
+  outline: 1px dashed var(--accent);
+  background: var(--accent-soft);
+}
+
+.chip-bin[draggable="true"] { cursor: grab; }
+.chip-dragging { opacity: .4; cursor: grabbing; }
+
+/* A category write is a round trip to GitHub, so the chip says so. */
+.chip-busy { opacity: .55; pointer-events: none; }
+.chip-err {
+  border-color: var(--danger, #b3261e) !important;
+  color: var(--danger, #b3261e) !important;
+}
+
+/* ---------- category dialog ---------- */
+
+.cat-choice { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+
+.cat-opt {
+  display: flex; flex-direction: column; gap: 2px; text-align: left;
+  padding: 10px 12px; border-radius: 8px; cursor: pointer; font: inherit;
+  background: var(--surface-2); border: 1px solid var(--border); color: var(--text);
+}
+.cat-opt b { font-size: .9rem; font-weight: 600; }
+.cat-opt span { font-size: .78rem; color: var(--text-dim); }
+.cat-opt:hover { border-color: var(--accent); }
+.cat-opt.on { border-color: var(--accent); background: var(--accent-soft); }
+.cat-opt.on b { color: var(--accent); }
+
+/* ---------- new-tag category, inside the add-tags dialog ---------- */
+
+.newcat {
+  display: flex; align-items: center; gap: 10px;
+  margin: 12px 0 4px; font-size: .78rem; color: var(--text-dim);
+}
+.newcat-label { white-space: nowrap; }
+
+.seg {
+  display: inline-flex; border: 1px solid var(--border);
+  border-radius: 999px; overflow: hidden;
+}
+.seg-opt {
+  padding: 4px 12px; font: inherit; font-size: .76rem; cursor: pointer;
+  background: transparent; border: 0; color: var(--text-dim);
+}
+.seg-opt + .seg-opt { border-left: 1px solid var(--border); }
+.seg-opt:hover { color: var(--accent); }
+.seg-opt.on {
+  background: var(--accent-soft); color: var(--accent); font-weight: 600;
+}

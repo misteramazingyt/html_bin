@@ -1,0 +1,16 @@
+# Which row a tag sits in on the index filter bar.
+#
+# Only metadata tags are listed. Anything not named here is a content tag, so a
+# new tag needs no entry to show up correctly and the file stays short — the
+# alternative, naming every tag and its category, would have to be kept in step
+# with the capture pipeline forever.
+#
+# content   what the item is about        Strategy, Laundry, Video "essays"
+# metadata  where it came from, what it is   from-bookmarks, meme
+#
+# Edited from the site: ctrl-click a chip, or drag it between the two rows.
+# Tags are matched case-insensitively.
+
+meta:
+  - "from-bookmarks"
+  - "meme"

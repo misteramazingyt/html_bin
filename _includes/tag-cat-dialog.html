@@ -1,0 +1,24 @@
+<dialog id="cat-dialog">
+  <h2 id="cat-title">Tag category</h2>
+  <p id="cat-sub"></p>
+
+  <div class="cat-choice" id="cat-choice" role="radiogroup" aria-label="Tag category">
+    <button class="cat-opt" type="button" data-cat="content" role="radio" aria-checked="false">
+      <b>Content</b>
+      <span>What the item is about</span>
+    </button>
+    <button class="cat-opt" type="button" data-cat="meta" role="radio" aria-checked="false">
+      <b>Metadata</b>
+      <span>Where it came from, or what it is</span>
+    </button>
+  </div>
+
+  <p class="suggest-hint">
+    You can also drag a tag from one row to the other.
+  </p>
+
+  <div class="dialog-actions">
+    <button class="btn" id="cat-cancel" type="button">Cancel</button>
+    <button class="btn btn-primary" id="cat-ok" type="button">Save</button>
+  </div>
+</dialog>

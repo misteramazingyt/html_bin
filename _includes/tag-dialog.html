@@ -10,6 +10,19 @@
 
   <div class="suggest" id="tag-suggest" role="listbox" aria-label="Existing tags"></div>
 
+  {%- comment -%}
+    Only offered for tags that do not exist yet: an existing tag already has a
+    category, and silently re-filing it from the add-tags box would move it for
+    every page at once. Hidden until the token field actually holds a new one.
+  {%- endcomment -%}
+  <div class="newcat" id="tag-newcat" hidden>
+    <span class="newcat-label">New tags go in</span>
+    <div class="seg" id="tag-newcat-seg" role="radiogroup" aria-label="Category for new tags">
+      <button class="seg-opt on" type="button" data-cat="content" role="radio" aria-checked="true">Content</button>
+      <button class="seg-opt" type="button" data-cat="meta" role="radio" aria-checked="false">Metadata</button>
+    </div>
+  </div>
+
   <p class="suggest-hint">
     <b>Tab</b> adds the highlighted tag · <b>↑↓</b> to move · <b>Enter</b> saves ·
     <b>Esc</b> cancels · <b>Backspace</b> on an empty box removes the last tag

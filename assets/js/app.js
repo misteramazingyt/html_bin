@@ -564,20 +564,28 @@
       " " + base;
   }
 
-  function ensureChip(tag) {
-    var group = document.querySelector('.filter-group');
-    if (!group) return;
+  function ensureChip(tag, cat) {
     var exists = document.querySelector('.chip-bin[data-tag="' + CSS.escape(tag) + '"]');
     if (exists) return;
+    cat = cat === "meta" ? "meta" : "content";
+    var group = document.getElementById(cat === "meta" ? "group-meta" : "group-content");
+    if (!group) group = document.querySelector(".filter-group");
+    if (!group) return;
     var b = document.createElement("button");
     b.type = "button";
     b.className = "chip chip-bin";
+    b.draggable = true;
     b.dataset.filter = "bin";
+    b.dataset.cat = cat;
     b.dataset.tag = tag;
     b.textContent = tag;
     b.style.setProperty("--h", hueFor(tag));
-    b.addEventListener("click", function () { toggleChip(b); });
     group.appendChild(b);
+    // A brand-new metadata tag has to be written to tag_meta.yml, or the next
+    // build would render it back under Content.
+    if (cat === "meta") {
+      setTagCategory(tag, "meta").catch(function () { /* reported on the chip */ });
+    }
   }
 
   /* ---------- tag picker ----------
@@ -616,15 +624,54 @@
     var shown = [];
     var active = 0;
 
+    // Only meaningful when the box holds a tag that does not exist yet.
+    var newCatEl = document.getElementById("tag-newcat");
+    var newCatSeg = document.getElementById("tag-newcat-seg");
+    var newCat = "content";
+
+    function isNew(t) {
+      return !pool.some(function (p) { return p.toLowerCase() === t.toLowerCase(); });
+    }
+
+    function syncNewCat() {
+      if (!newCatEl) return;
+      newCatEl.hidden = !(opts.allowNewCategory && chosen.some(isNew));
+    }
+
+    if (newCatSeg && !newCatSeg.dataset.wired) {
+      newCatSeg.dataset.wired = "1";
+      newCatSeg.addEventListener("click", function (e) {
+        var b = e.target.closest(".seg-opt");
+        if (!b) return;
+        e.preventDefault();
+        newCat = b.dataset.cat;
+        newCatSeg.querySelectorAll(".seg-opt").forEach(function (o) {
+          var on = o === b;
+          o.classList.toggle("on", on);
+          o.setAttribute("aria-checked", on ? "true" : "false");
+        });
+      });
+    }
+
     titleEl.textContent = opts.title || "Tags";
     subEl.textContent = opts.sub || "";
     input.value = "";
+
+    newCat = "content";
+    if (newCatSeg) {
+      newCatSeg.querySelectorAll(".seg-opt").forEach(function (o) {
+        var on = o.dataset.cat === "content";
+        o.classList.toggle("on", on);
+        o.setAttribute("aria-checked", on ? "true" : "false");
+      });
+    }
 
     function has(t) {
       return chosen.some(function (c) { return c.toLowerCase() === t.toLowerCase(); });
     }
 
     function renderChips() {
+      syncNewCat();
       chipsEl.innerHTML = "";
       chosen.forEach(function (t, i) {
         var chip = document.createElement("span");
@@ -715,7 +762,9 @@
       // Never silently drop half-typed text.
       var raw = input.value.trim();
       if (raw) add(shown.length && active < shown.length ? shown[active] : raw);
-      finish(chosen.slice());
+      var out = chosen.slice();
+      out.newCat = newCat;          // read by bulkAddTags for tags it creates
+      finish(out);
     }
 
     function onKey(e) {
@@ -753,6 +802,256 @@
     setTimeout(function () { input.focus(); }, 0);
 
     return new Promise(function (resolve) { settle = resolve; });
+  }
+
+  /* ---------- tag categories ----------
+   * Chips sit in one of two rows: Content (what the item is about) and Metadata
+   * (where it came from, what it is). The split lives in _data/tag_meta.yml,
+   * which lists only the metadata tags — anything unlisted is content, so a new
+   * tag needs no entry and the file cannot drift out of step with the capture
+   * pipeline.
+   *
+   * Liquid renders the rows at build time. Editing one commits the yml through
+   * the same contents API as everything else, but GitHub Pages takes a minute or
+   * so to rebuild, so the move is also applied to the DOM immediately and
+   * remembered briefly in localStorage — otherwise a reload inside that window
+   * would snap the chip back and look like the save had failed.
+   */
+
+  var TAG_META_PATH = "_data/tag_meta.yml";
+  var PENDING_KEY = "html_bin.tag_meta_pending";
+  var PENDING_TTL = 20 * 60 * 1000;   // long enough for a Pages build, no longer
+
+  function readPending() {
+    try {
+      var o = JSON.parse(localStorage.getItem(PENDING_KEY) || "{}");
+      var now = Date.now(), out = {}, kept = false;
+      Object.keys(o).forEach(function (k) {
+        if (now - (o[k].at || 0) < PENDING_TTL) { out[k] = o[k]; kept = true; }
+      });
+      if (!kept) localStorage.removeItem(PENDING_KEY);
+      return out;
+    } catch (e) { return {}; }
+  }
+
+  function rememberPending(tag, cat) {
+    var o = readPending();
+    o[tag.toLowerCase()] = { cat: cat, at: Date.now() };
+    try { localStorage.setItem(PENDING_KEY, JSON.stringify(o)); } catch (e) { /* full or blocked */ }
+  }
+
+  // A YAML scalar as this file writes them: quoted, or bare.
+  function unquoteScalar(s) {
+    s = String(s).trim();
+    var q = s.charAt(0);
+    if ((q === '"' || q === "'") && s.charAt(s.length - 1) === q) {
+      s = s.slice(1, -1);
+      if (q === '"') s = s.replace(/\\"/g, '"').replace(/\\\\/g, "\\");
+    }
+    return s;
+  }
+
+  function parseMetaYaml(text) {
+    var lines = String(text).split(/\r?\n/);
+    var out = [], inList = false;
+    for (var i = 0; i < lines.length; i++) {
+      var ln = lines[i];
+      if (/^meta\s*:/.test(ln)) { inList = true; continue; }
+      if (!inList) continue;
+      var m = /^\s*-\s*(.+?)\s*$/.exec(ln);
+      if (m) { out.push(unquoteScalar(m[1])); continue; }
+      if (/^\s*$/.test(ln) || /^\s*#/.test(ln)) continue;
+      break;                                   // back at top level: list is over
+    }
+    return out;
+  }
+
+  // Everything above `meta:` is comment and is preserved verbatim; only the list
+  // is rewritten, so the file keeps explaining itself.
+  function serialiseMetaYaml(text, names) {
+    var lines = String(text).split(/\r?\n/);
+    var head = [], i = 0;
+    for (; i < lines.length; i++) {
+      if (/^meta\s*:/.test(lines[i])) break;
+      head.push(lines[i]);
+    }
+    if (i === lines.length) head = lines.slice();   // no meta key yet
+    while (head.length && /^\s*$/.test(head[head.length - 1])) head.pop();
+
+    var body = ["meta:"];
+    names.slice().sort(function (a, b) {
+      return a.toLowerCase().localeCompare(b.toLowerCase());
+    }).forEach(function (t) { body.push("  - " + yamlTag(t)); });
+
+    return head.concat(head.length ? [""] : [], body, [""]).join("\n");
+  }
+
+  function categoryOf(tag) {
+    var c = document.querySelector('.chip-bin[data-tag="' + CSS.escape(tag) + '"]');
+    return (c && c.dataset.cat) || "content";
+  }
+
+  function moveChip(tag, cat) {
+    var chip = document.querySelector('.chip-bin[data-tag="' + CSS.escape(tag) + '"]');
+    var group = document.getElementById(cat === "meta" ? "group-meta" : "group-content");
+    if (!chip || !group) return;
+    chip.dataset.cat = cat;
+    group.appendChild(chip);
+  }
+
+  function applyPendingCategories() {
+    var pend = readPending();
+    Object.keys(pend).forEach(function (k) {
+      var chip = Array.prototype.find.call(
+        document.querySelectorAll(".chip-bin"), function (c) {
+          return (c.dataset.tag || "").toLowerCase() === k;
+        });
+      if (chip && chip.dataset.cat !== pend[k].cat) {
+        moveChip(chip.dataset.tag, pend[k].cat);
+      }
+    });
+  }
+
+  /* Commit a category change. Resolves to the category actually stored. */
+  function setTagCategory(tag, cat) {
+    if (!getToken()) {
+      return Promise.reject(new Error("sign in to change a tag's category"));
+    }
+    return ghGet(TAG_META_PATH).then(function (j) {
+      return { text: b64decode(j.content), sha: j.sha };
+    }, function (err) {
+      // A repo without the file yet: start one rather than failing.
+      if (/read failed \(404\)/.test(err.message)) return { text: "meta:\n", sha: null };
+      throw err;
+    }).then(function (cur) {
+      var names = parseMetaYaml(cur.text);
+      var lc = tag.toLowerCase();
+      var without = names.filter(function (t) { return t.toLowerCase() !== lc; });
+      if (cat === "meta") without.push(tag);
+
+      var next = serialiseMetaYaml(cur.text, without);
+      if (next === cur.text) return cat;          // already right: no empty commit
+
+      return ghPut(TAG_META_PATH, next, cur.sha,
+                   "tag_meta: " + tag + " -> " + (cat === "meta" ? "metadata" : "content"))
+        .then(function () { return cat; });
+    }).then(function (done) {
+      moveChip(tag, done);
+      rememberPending(tag, done);
+      applyFilter();
+      return done;
+    });
+  }
+
+  /* ---------- category dialog (ctrl-click a chip) ---------- */
+
+  function openCatDialog(tag, current) {
+    var dlg = document.getElementById("cat-dialog");
+    if (!dlg) return Promise.resolve(null);
+
+    var sub = document.getElementById("cat-sub");
+    var opts = dlg.querySelectorAll(".cat-opt");
+    var okBtn = document.getElementById("cat-ok");
+    var cancelBtn = document.getElementById("cat-cancel");
+    var picked = current || "content";
+
+    sub.textContent = 'Where should "' + tag + '" sit?';
+
+    function paint() {
+      opts.forEach(function (o) {
+        var on = o.dataset.cat === picked;
+        o.classList.toggle("on", on);
+        o.setAttribute("aria-checked", on ? "true" : "false");
+      });
+    }
+
+    var settle;
+    function finish(v) {
+      opts.forEach(function (o) { o.removeEventListener("click", onPick); });
+      okBtn.removeEventListener("click", onOk);
+      cancelBtn.removeEventListener("click", onCancel);
+      dlg.removeEventListener("close", onClose);
+      if (dlg.open) dlg.close();
+      settle(v);
+    }
+    function onPick(e) { e.preventDefault(); picked = this.dataset.cat; paint(); }
+    function onOk(e) { e.preventDefault(); finish(picked); }
+    function onCancel(e) { e.preventDefault(); finish(null); }
+    function onClose() { finish(null); }          // covers Esc
+
+    opts.forEach(function (o) { o.addEventListener("click", onPick); });
+    okBtn.addEventListener("click", onOk);
+    cancelBtn.addEventListener("click", onCancel);
+    dlg.addEventListener("close", onClose);
+
+    paint();
+    dlg.showModal();
+    return new Promise(function (resolve) { settle = resolve; });
+  }
+
+  function chipStatus(chip, msg, kind) {
+    chip.classList.remove("chip-busy", "chip-err");
+    if (kind === "busy") chip.classList.add("chip-busy");
+    if (kind === "err") {
+      chip.classList.add("chip-err");
+      chip.title = msg;
+      setTimeout(function () { chip.classList.remove("chip-err"); chip.title = ""; }, 4000);
+    }
+  }
+
+  function recategorise(chip, cat) {
+    var tag = chip.dataset.tag;
+    if (!cat || cat === chip.dataset.cat) return;
+    var from = chip.dataset.cat;
+    chipStatus(chip, "", "busy");
+    setTagCategory(tag, cat).then(function () {
+      chipStatus(chip, "", null);
+    }, function (err) {
+      moveChip(tag, from);                       // put it back; the write failed
+      chipStatus(chip, err.message, "err");
+    });
+  }
+
+  /* ---------- drag a chip between the rows ---------- */
+
+  function wireChipDnD() {
+    document.addEventListener("dragstart", function (e) {
+      var chip = e.target.closest && e.target.closest(".chip-bin");
+      if (!chip) return;
+      e.dataTransfer.setData("text/plain", chip.dataset.tag);
+      e.dataTransfer.effectAllowed = "move";
+      chip.classList.add("chip-dragging");
+      document.body.classList.add("dragging-chip");
+    });
+
+    document.addEventListener("dragend", function (e) {
+      var chip = e.target.closest && e.target.closest(".chip-bin");
+      if (chip) chip.classList.remove("chip-dragging");
+      document.body.classList.remove("dragging-chip");
+      document.querySelectorAll(".filter-group").forEach(function (g) {
+        g.classList.remove("drop-over");
+      });
+    });
+
+    document.querySelectorAll(".filter-group").forEach(function (group) {
+      group.addEventListener("dragover", function (e) {
+        if (!document.body.classList.contains("dragging-chip")) return;
+        e.preventDefault();                      // required to allow a drop
+        e.dataTransfer.dropEffect = "move";
+        group.classList.add("drop-over");
+      });
+      group.addEventListener("dragleave", function () {
+        group.classList.remove("drop-over");
+      });
+      group.addEventListener("drop", function (e) {
+        e.preventDefault();
+        group.classList.remove("drop-over");
+        var tag = e.dataTransfer.getData("text/plain");
+        if (!tag) return;
+        var chip = document.querySelector('.chip-bin[data-tag="' + CSS.escape(tag) + '"]');
+        if (chip) recategorise(chip, group.dataset.cat);
+      });
+    });
   }
 
   /* ---------- bulk operations ---------- */
@@ -812,10 +1111,15 @@
     openTagPicker({
       title: "Add tags",
       sub: "Applied to " + n + " page" + (n === 1 ? "" : "s") + ".",
-      pool: allKnownTags()
+      pool: allKnownTags(),
+      allowNewCategory: true
     }).then(function (add) {
       if (!add || !add.length) return;
-      add.forEach(ensureChip);
+      // newCat rides along on the resolved array; it applies only to tags that
+      // did not already exist, since an existing tag already has a category and
+      // re-filing it here would move it for every page at once.
+      var newCat = add.newCat === "meta" ? "meta" : "content";
+      add.forEach(function (t) { ensureChip(t, newCat); });
       doAddTags(add);
     });
   }
@@ -1034,9 +1338,25 @@
     });
     setView(localStorage.getItem(VIEW_KEY) === "details" ? "details" : "cards");
 
+    // Ctrl/Cmd-click edits the chip's category instead of filtering by it —
+    // the same modifier that selects a card, rather than a new gesture to learn.
     document.querySelectorAll(".chip").forEach(function (c) {
-      c.addEventListener("click", function () { toggleChip(c); });
+      c.addEventListener("click", function (e) {
+        if ((e.ctrlKey || e.metaKey) && c.classList.contains("chip-bin")) {
+          e.preventDefault();
+          e.stopPropagation();
+          if (!getToken()) { openDialog(); return; }
+          openCatDialog(c.dataset.tag, c.dataset.cat).then(function (cat) {
+            if (cat) recategorise(c, cat);
+          });
+          return;
+        }
+        toggleChip(c);
+      });
     });
+
+    applyPendingCategories();
+    wireChipDnD();
     var cf = document.getElementById("clear-filters");
     if (cf) cf.addEventListener("click", clearFilters);
 
