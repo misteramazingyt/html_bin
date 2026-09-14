@@ -2,7 +2,7 @@
 title: Man Crying Over Loss Of Online Community
 permalink: /202609122333_man_crying_over_loss_of_online_community/
 tags: [Feeling Overwhelmed, Social Media, Community Loss, Technological Impact]
-bin: ["meme", "from-bookmarks"]
+bin: ["meme", "from-bookmarks", "community"]
 ---
 
 # Man Crying Over Loss Of Online Community
