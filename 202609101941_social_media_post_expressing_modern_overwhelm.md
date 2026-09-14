@@ -2,6 +2,7 @@
 title: Social Media Post Expressing Modern Overwhelm
 permalink: /202609101941_social_media_post_expressing_modern_overwhelm/
 tags: [Feeling Overwhelmed, Social Media, Mental Health, Cognitive Processes]
+bin: ["Strategy"]
 ---
 
 # Social Media Post Expressing Modern Overwhelm
