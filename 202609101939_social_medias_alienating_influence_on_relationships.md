@@ -2,6 +2,7 @@
 title: Social Media's Alienating Influence on Relationships
 permalink: /202609101939_social_medias_alienating_influence_on_relationships/
 tags: [Social Media, Societal Critique, Mental Health, Technological Impact]
+bin: ["Strategy"]
 ---
 
 # Social Media's Alienating Influence on Relationships
