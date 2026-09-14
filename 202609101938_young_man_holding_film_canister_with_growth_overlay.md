@@ -2,6 +2,7 @@
 title: Young Man Holding Film Canister With Growth Overlay
 permalink: /202609101938_young_man_holding_film_canister_with_growth_overlay/
 tags: [Conceptual Explanation, Video Essay Culture, Technological Impact, Nostalgia]
+bin: ["Strategy"]
 ---
 
 # Young Man Holding Film Canister With Growth Overlay
