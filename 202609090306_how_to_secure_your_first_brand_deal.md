@@ -2,6 +2,7 @@
 title: How To Secure Your First Brand Deal
 permalink: /202609090306_how_to_secure_your_first_brand_deal/
 tags: [Influencer Marketing, Social Media, Economics, Career Creator]
+bin: ["Strategy"]
 ---
 
 # How To Secure Your First Brand Deal
