@@ -2,7 +2,7 @@
 title: Why The Revolution Will Never Happen
 permalink: /202609122335_why_the_revolution_will_never_happen/
 tags: [Everyday Humor, Societal Critique, Economics, Consumer Culture]
-bin: ["meme", "from-bookmarks"]
+bin: ["meme", "from-bookmarks", "\"revolution\""]
 ---
 
 # Why The Revolution Will Never Happen
