@@ -2,6 +2,7 @@
 title: Humorous Tier List of Common White Guy Phrases
 permalink: /202609140425_humorous_tier_list_of_common_white_guy_phrases/
 tags: [Everyday Humor, Social Construct, Video Essay Culture, Conceptual Diagram]
+bin: ["Strategy"]
 ---
 
 # Humorous Tier List of Common White Guy Phrases
