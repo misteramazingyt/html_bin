@@ -2,6 +2,7 @@
 title: The Three Pillars of Great Content Creation
 permalink: /202608282234_the_three_pillars_of_great_content_creation/
 tags: [Conceptual Diagram, Social Media, Theory Explanation, Video Essay Culture]
+bin: ["Strategy"]
 ---
 
 # The Three Pillars of Great Content Creation
