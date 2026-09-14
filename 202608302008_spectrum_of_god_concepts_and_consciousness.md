@@ -2,6 +2,7 @@
 title: Spectrum of God Concepts and Consciousness
 permalink: /202608302008_spectrum_of_god_concepts_and_consciousness/
 tags: [Metaphysics, Cosmology, Conceptual Diagram, Religious Philosophy]
+archived: true
 ---
 
 # Spectrum of God Concepts and Consciousness
