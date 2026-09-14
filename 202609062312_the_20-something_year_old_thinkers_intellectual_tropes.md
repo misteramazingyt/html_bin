@@ -2,6 +2,7 @@
 title: The 20-Something Year Old Thinkers' Intellectual Tropes
 permalink: /202609062312_the_20-something_year_old_thinkers_intellectual_tropes/
 tags: [Academic Humor, Video Essay Culture, Philosophical Concepts, Epistemology]
+archived: true
 ---
 
 # The 20-Something Year Old Thinkers' Intellectual Tropes
