@@ -2,6 +2,7 @@
 title: Thinking About The Way We Know People
 permalink: /202609101937_thinking_about_the_way_we_know_people/
 tags: [Human Understanding, Epistemology, Perception Theory]
+bin: ["Strategy"]
 ---
 
 # Thinking About The Way We Know People
