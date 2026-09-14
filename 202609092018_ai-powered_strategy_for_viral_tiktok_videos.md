@@ -2,6 +2,7 @@
 title: AI-Powered Strategy For Viral TikTok Videos
 permalink: /202609092018_ai-powered_strategy_for_viral_tiktok_videos/
 tags: [Social Media, Technological Impact, AI Content Strategy, Systems Theory]
+bin: ["Strategy"]
 ---
 
 # AI-Powered Strategy For Viral TikTok Videos
