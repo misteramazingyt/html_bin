@@ -2,7 +2,7 @@
 title: Exploring Social Justice In Scripture And Politics
 permalink: /202609122337_exploring_social_justice_in_scripture_and_politics/
 tags: [Academic Humor, Christian Theology, Political Discourse, Ethics]
-bin: ["meme", "from-bookmarks"]
+bin: ["meme", "from-bookmarks", "Strategy"]
 ---
 
 # Exploring Social Justice In Scripture And Politics
