@@ -2,6 +2,7 @@
 title: The Subjective Experience Of Consciousness In A Crowd
 permalink: /202609012242_the_subjective_experience_of_consciousness_in_a_crowd/
 tags: [Subjective Reality, Perception Theory, Theory Of Mind, Academic Humor]
+archived: true
 ---
 
 # The Subjective Experience Of Consciousness In A Crowd
