@@ -2,6 +2,7 @@
 title: Maximizing Instagram Reach With Trial Reels Explained
 permalink: /202608290548_maximizing_instagram_reach_with_trial_reels_explained/
 tags: [Conceptual Explanation, Social Media, Technological Impact, Content Strategy]
+bin: ["Strategy"]
 ---
 
 # Maximizing Instagram Reach With Trial Reels Explained
