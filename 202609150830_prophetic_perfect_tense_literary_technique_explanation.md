@@ -2,6 +2,7 @@
 title: Prophetic Perfect Tense Literary Technique Explanation
 permalink: /202609150830_prophetic_perfect_tense_literary_technique_explanation/
 tags: [Christian Theology, Theory Explanation, Conceptual Diagram, Literary Analysis]
+bin: ["Reference"]
 ---
 
 # Prophetic Perfect Tense Literary Technique Explanation
