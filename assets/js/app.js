@@ -1400,6 +1400,19 @@
 
     applyPendingCategories();
     wireChipDnD();
+
+    // Tags listed under hidden_by_default in _data/tag_meta.yml start excluded,
+    // as though they had been alt-clicked: a working queue like "To Respond"
+    // would otherwise crowd out everything else on arrival. The chip still shows
+    // in its excluded style and Clear filters is offered from the start, so the
+    // shorter library explains itself rather than looking like pages went
+    // missing. Clearing brings them back for the session; a reload re-applies it.
+    document.querySelectorAll('.chip-bin[data-hide-default="true"]').forEach(function (c) {
+      if (excludedBin.indexOf(c.dataset.tag) === -1) {
+        excludedBin.push(c.dataset.tag);
+        c.classList.add("chip-excluded");
+      }
+    });
     var cf = document.getElementById("clear-filters");
     if (cf) cf.addEventListener("click", clearFilters);
 

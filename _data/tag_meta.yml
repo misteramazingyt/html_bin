@@ -14,3 +14,14 @@
 meta:
   - "from-bookmarks"
   - "meme"
+
+# Tags whose pages are hidden when the index loads, as if you had alt-clicked
+# them. For working queues that would otherwise crowd out everything else.
+#
+# The chip still renders, in its excluded style, and Clear filters is offered
+# from the start -- hiding pages with nothing on screen to say why would make
+# the library look mysteriously short. Clearing filters brings them back for
+# the session; a reload re-applies the default.
+
+hidden_by_default:
+  - "To Respond"

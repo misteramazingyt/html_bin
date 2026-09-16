@@ -52,6 +52,13 @@ permalink: /
     {% assign meta_lc = meta_lc | push: ml %}
   {% endfor %}
 
+  {% assign hide_names = site.data.tag_meta.hidden_by_default %}
+  {% assign hide_lc = "" | split: "" %}
+  {% for h in hide_names %}
+    {% assign hl = h | downcase %}
+    {% assign hide_lc = hide_lc | push: hl %}
+  {% endfor %}
+
   {% assign content_tags = "" | split: "" %}
   {% assign metadata_tags = "" | split: "" %}
   {% for t in bin_uniq %}
@@ -69,8 +76,10 @@ permalink: /
         <span class="filter-label">Content</span>
         {% for t in content_tags %}
           {% assign n = bin_all | where_exp: "x", "x == t" | size %}
+          {% assign tlc = t | downcase %}
           <button class="chip chip-bin" type="button" draggable="true"
-                  data-filter="bin" data-cat="content" data-tag="{{ t | escape }}">
+                  data-filter="bin" data-cat="content" data-tag="{{ t | escape }}"
+                  {% if hide_lc contains tlc %}data-hide-default="true"{% endif %}>
             {{ t }}<span class="chip-n">{{ n }}</span>
           </button>
         {% endfor %}
@@ -80,8 +89,10 @@ permalink: /
         <span class="filter-label">Metadata</span>
         {% for t in metadata_tags %}
           {% assign n = bin_all | where_exp: "x", "x == t" | size %}
+          {% assign tlc = t | downcase %}
           <button class="chip chip-bin" type="button" draggable="true"
-                  data-filter="bin" data-cat="meta" data-tag="{{ t | escape }}">
+                  data-filter="bin" data-cat="meta" data-tag="{{ t | escape }}"
+                  {% if hide_lc contains tlc %}data-hide-default="true"{% endif %}>
             {{ t }}<span class="chip-n">{{ n }}</span>
           </button>
         {% endfor %}
