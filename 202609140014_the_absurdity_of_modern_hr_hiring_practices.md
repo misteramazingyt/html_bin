@@ -2,6 +2,7 @@
 title: The Absurdity of Modern HR Hiring Practices
 permalink: /202609140014_the_absurdity_of_modern_hr_hiring_practices/
 tags: [Societal Critique, Everyday Humor, Corporate Inefficiency]
+archived: true
 ---
 
 # The Absurdity of Modern HR Hiring Practices
