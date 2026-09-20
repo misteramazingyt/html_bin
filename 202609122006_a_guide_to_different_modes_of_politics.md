@@ -2,6 +2,7 @@
 title: A Guide To Different Modes Of Politics
 permalink: /202609122006_a_guide_to_different_modes_of_politics/
 tags: [Political Discourse, Societal Critique, Conceptual Diagram, Video Essay Culture]
+archived: true
 ---
 
 # A Guide To Different Modes Of Politics
