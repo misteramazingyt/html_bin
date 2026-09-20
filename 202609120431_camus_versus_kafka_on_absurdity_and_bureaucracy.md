@@ -2,6 +2,7 @@
 title: Camus Versus Kafka On Absurdity And Bureaucracy
 permalink: /202609120431_camus_versus_kafka_on_absurdity_and_bureaucracy/
 tags: [Academic Humor, Existentialism, Conceptual Explanation, Memetic Knowledge]
+archived: true
 ---
 
 # Camus Versus Kafka On Absurdity And Bureaucracy
