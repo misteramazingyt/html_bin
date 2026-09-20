@@ -2,6 +2,7 @@
 title: Mandela Effect Examples In Popular Culture
 permalink: /202608290557_mandela_effect_examples_in_popular_culture/
 tags: [Mandela Effect, Cognitive Processes, Memetic Knowledge, Perception Theory]
+archived: true
 ---
 
 # Mandela Effect Examples In Popular Culture
