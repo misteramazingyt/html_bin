@@ -3,6 +3,7 @@ title: Plato Versus Aristotle On The Concept Of A Chair
 permalink: /202609122347_plato_versus_aristotle_on_the_concept_of_a_chair/
 tags: [Academic Humor, Platonic Philosophy, Ontology, Conceptual Explanation]
 bin: ["meme", "from-bookmarks"]
+archived: true
 ---
 
 # Plato Versus Aristotle On The Concept Of A Chair
