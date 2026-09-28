@@ -2,6 +2,7 @@
 title: Homies Recognize Absurdity And Create Meaning
 permalink: /202609181850_homies_recognize_absurdity_and_create_meaning/
 tags: [Existentialism, Philosophical Concepts, Everyday Humor, Video Essay Culture]
+archived: true
 ---
 
 # Homies Recognize Absurdity And Create Meaning
