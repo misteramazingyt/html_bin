@@ -2,6 +2,7 @@
 title: Contrasting Emotional Auras Meme
 permalink: /202609181853_contrasting_emotional_auras_meme/
 tags: [Everyday Humor, Feeling Overwhelmed, Irony, Social Media]
+archived: true
 ---
 
 # Contrasting Emotional Auras Meme
