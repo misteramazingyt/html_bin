@@ -2,6 +2,7 @@
 title: Choosing Your Digital Path - Divine or Demonic
 permalink: /202609012241_choosing_your_digital_path_divine_or_demonic/
 tags: [Technological Impact, Esoteric Spirituality, Societal Critique, Conceptual Diagram]
+archived: true
 ---
 
 # Choosing Your Digital Path: Divine or Demonic
