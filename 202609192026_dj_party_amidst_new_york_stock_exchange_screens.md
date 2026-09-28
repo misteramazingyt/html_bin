@@ -2,6 +2,7 @@
 title: DJ Party Amidst New York Stock Exchange Screens
 permalink: /202609192026_dj_party_amidst_new_york_stock_exchange_screens/
 tags: [Economics, Consumer Culture, Societal Critique]
+archived: true
 ---
 
 # DJ Party Amidst New York Stock Exchange Screens
