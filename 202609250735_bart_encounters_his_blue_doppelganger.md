@@ -2,6 +2,7 @@
 title: Bart Encounters His Blue Doppelgänger
 permalink: /202609250735_bart_encounters_his_blue_doppelganger/
 tags: [Animated Characters, Classic Animation, Subjective Reality, Metaphysical Concepts]
+archived: true
 ---
 
 # Bart Encounters His Blue Doppelgänger
