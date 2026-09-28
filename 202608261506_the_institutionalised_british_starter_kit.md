@@ -2,6 +2,7 @@
 title: The Institutionalised British Starter Kit
 permalink: /202608261506_the_institutionalised_british_starter_kit/
 tags: [Societal Critique, Social Construct, Everyday Humor, Mental Health]
+archived: true
 ---
 
 # The Institutionalised British Starter Kit
