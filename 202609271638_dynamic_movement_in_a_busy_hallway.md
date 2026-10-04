@@ -2,6 +2,7 @@
 title: Dynamic Movement In A Busy Hallway
 permalink: /202609271638_dynamic_movement_in_a_busy_hallway/
 tags: [Video Essay Culture, Performance Art, Public Space, Modern Culture]
+archived: true
 ---
 
 # Dynamic Movement In A Busy Hallway
