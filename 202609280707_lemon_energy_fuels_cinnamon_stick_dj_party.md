@@ -2,6 +2,7 @@
 title: Lemon Energy Fuels Cinnamon Stick DJ Party
 permalink: /202609280707_lemon_energy_fuels_cinnamon_stick_dj_party/
 tags: [Animated Characters, Causal Flow, Surreal Humor, Video Essay Culture]
+archived: true
 ---
 
 # Lemon Energy Fuels Cinnamon Stick DJ Party
