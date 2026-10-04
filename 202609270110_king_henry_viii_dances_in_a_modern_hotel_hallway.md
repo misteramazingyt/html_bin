@@ -2,6 +2,7 @@
 title: King Henry VIII Dances In A Modern Hotel Hallway
 permalink: /202609270110_king_henry_viii_dances_in_a_modern_hotel_hallway/
 tags: [Everyday Humor, Irony, Memetic Knowledge, Video Essay Culture]
+archived: true
 ---
 
 # King Henry VIII Dances In A Modern Hotel Hallway
