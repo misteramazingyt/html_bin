@@ -2,6 +2,7 @@
 title: Energetic Dancer With Unique Hair In City Plaza
 permalink: /202609270110_energetic_dancer_with_unique_hair_in_city_plaza/
 tags: [Irony, Nostalgia, Eccentric Performance, Video Essay Culture]
+archived: true
 ---
 
 # Energetic Dancer With Unique Hair In City Plaza
