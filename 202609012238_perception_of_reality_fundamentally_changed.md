@@ -2,6 +2,7 @@
 title: Perception Of Reality Fundamentally Changed
 permalink: /202609012238_perception_of_reality_fundamentally_changed/
 tags: [Conceptual Shift, Feeling Overwhelmed, Metaphysics, Cosmology]
+archived: true
 ---
 
 # Perception Of Reality Fundamentally Changed
