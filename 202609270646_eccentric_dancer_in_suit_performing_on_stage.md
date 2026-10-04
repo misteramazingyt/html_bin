@@ -2,6 +2,7 @@
 title: Eccentric Dancer In Suit Performing On Stage
 permalink: /202609270646_eccentric_dancer_in_suit_performing_on_stage/
 tags: [Everyday Humor, Irony, Performance Art, Visual Contrast]
+archived: true
 ---
 
 # Eccentric Dancer In Suit Performing On Stage
