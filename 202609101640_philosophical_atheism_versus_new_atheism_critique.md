@@ -2,6 +2,7 @@
 title: Philosophical Atheism Versus New Atheism Critique
 permalink: /202609101640_philosophical_atheism_versus_new_atheism_critique/
 tags: [Philosophy, Intellectual History, Conceptual Shift, Societal Critique]
+archived: true
 ---
 
 # Philosophical Atheism Versus New Atheism Critique
