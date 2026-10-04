@@ -2,6 +2,7 @@
 title: Man With Distinctive Hair And Tattoos Drinks Protein
 permalink: /202609270109_man_with_distinctive_hair_and_tattoos_drinks_protein/
 tags: [Semiotics Theory, Social Construct, Video Essay Culture, Memetic Knowledge]
+archived: true
 ---
 
 # Man With Distinctive Hair And Tattoos Drinks Protein
