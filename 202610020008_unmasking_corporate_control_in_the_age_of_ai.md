@@ -2,6 +2,7 @@
 title: Unmasking Corporate Control In The Age Of AI
 permalink: /202610020008_unmasking_corporate_control_in_the_age_of_ai/
 tags: [Technological Impact, Economics, Societal Critique, Corporate Power]
+bin: ["Strategy"]
 ---
 
 # Unmasking Corporate Control In The Age Of AI
