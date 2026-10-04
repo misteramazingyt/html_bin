@@ -2,6 +2,7 @@
 title: Businessman Dances Unconventionally In Tokyo Subway Station
 permalink: /202609262353_businessman_dances_unconventionally_in_tokyo_subway_station/
 tags: [Everyday Humor, Irony, Societal Critique, Social Construct]
+archived: true
 ---
 
 # Businessman Dances Unconventionally In Tokyo Subway Station
