@@ -2,6 +2,7 @@
 title: Exploring Affordable Dining In Los Angeles
 permalink: /202610110308_exploring_affordable_dining_in_los_angeles/
 tags: [Consumer Culture, Economics, Video Essay Culture, Los Angeles Food]
+archived: true
 ---
 
 # Exploring Affordable Dining In Los Angeles
