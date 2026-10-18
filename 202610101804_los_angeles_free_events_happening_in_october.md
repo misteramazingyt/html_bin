@@ -2,6 +2,7 @@
 title: Los Angeles Free Events Happening In October
 permalink: /202610101804_los_angeles_free_events_happening_in_october/
 tags: [Social Media, Consumer Culture, Local Events, City Guide]
+archived: true
 ---
 
 # Los Angeles Free Events Happening In October
