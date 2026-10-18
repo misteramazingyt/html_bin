@@ -2,6 +2,7 @@
 title: Characteristics of YouTubers Stuck in 2014
 permalink: /202610010715_characteristics_of_youtubers_stuck_in_2014/
 tags: [Social Media, Video Essay Culture, Memetic Knowledge, Societal Critique]
+archived: true
 ---
 
 # Characteristics of YouTubers Stuck in 2014
