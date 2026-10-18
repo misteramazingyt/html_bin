@@ -2,6 +2,7 @@
 title: Son Responds Yes While Pushing Philosophical Boulder
 permalink: /202609160937_son_responds_yes_while_pushing_philosophical_boulder/
 tags: [Academic Humor, Philosophical Concepts, Existentialism, Feeling Overwhelmed]
+archived: true
 ---
 
 # Son Responds Yes While Pushing Philosophical Boulder
