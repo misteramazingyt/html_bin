@@ -3,6 +3,7 @@ title: My Political Journey Through Marxist Thought
 permalink: /202610180305_my_political_journey_through_marxist_thought/
 tags: [Political Discourse, Intellectual History, Economics, Conceptual Shift]
 bin: ["meme", "from-bookmarks"]
+archived: true
 ---
 
 # My Political Journey Through Marxist Thought
