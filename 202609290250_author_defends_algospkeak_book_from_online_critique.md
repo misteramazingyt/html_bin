@@ -2,6 +2,7 @@
 title: Author Defends Algospkeak Book From Online Critique
 permalink: /202609290250_author_defends_algospkeak_book_from_online_critique/
 tags: [Social Media, Technological Impact, Theory Explanation, Video Essay Culture]
+archived: true
 ---
 
 # Author Defends Algospkeak Book From Online Critique
