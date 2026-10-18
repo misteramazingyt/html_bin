@@ -2,6 +2,7 @@
 title: Utopian Realism Balancing Intellect and Will
 permalink: /202609180707_utopian_realism_balancing_intellect_and_will/
 tags: [Philosophical Concepts, Conceptual Diagram, Human Understanding, Subjectivity Theory]
+archived: true
 ---
 
 # Utopian Realism Balancing Intellect and Will
