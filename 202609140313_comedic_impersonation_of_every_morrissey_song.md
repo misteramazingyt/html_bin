@@ -3,6 +3,7 @@ title: Comedic Impersonation of Every Morrissey Song
 permalink: /202609140313_comedic_impersonation_of_every_morrissey_song/
 tags: [Everyday Humor, Societal Critique, Video Essay Culture]
 bin: ["meme", "from-bookmarks"]
+archived: true
 ---
 
 # Comedic Impersonation of Every Morrissey Song
