@@ -2,6 +2,7 @@
 title: Animated Philosophical Concepts and Video Game Memes
 permalink: /202610010730_animated_philosophical_concepts_and_video_game_memes/
 tags: [Philosophical Concepts, Animated Characters, Video Game Culture, Logic]
+archived: true
 ---
 
 # Animated Philosophical Concepts and Video Game Memes
