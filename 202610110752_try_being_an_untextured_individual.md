@@ -2,6 +2,7 @@
 title: Try Being An Untextured Individual
 permalink: /202610110752_try_being_an_untextured_individual/
 tags: [Memetic Knowledge, Video Game Culture, Social Construct, Semiotics Theory]
+archived: true
 ---
 
 # Try Being An Untextured Individual
