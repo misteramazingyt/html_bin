@@ -2,6 +2,7 @@
 title: Questioning Writing's Role in Thought
 permalink: /202610010725_questioning_writings_role_in_thought/
 tags: [Cognitive Processes, Epistemology, Philosophy of Mind]
+archived: true
 ---
 
 # Questioning Writing's Role in Thought
