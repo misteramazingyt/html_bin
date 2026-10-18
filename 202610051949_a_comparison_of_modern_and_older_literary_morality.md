@@ -2,6 +2,7 @@
 title: A Comparison of Modern and Older Literary Morality
 permalink: /202610051949_a_comparison_of_modern_and_older_literary_morality/
 tags: [Literary Analysis, Ethics, Societal Critique, Academic Humor]
+archived: true
 ---
 
 # A Comparison of Modern and Older Literary Morality
