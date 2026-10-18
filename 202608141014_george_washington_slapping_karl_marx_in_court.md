@@ -2,6 +2,7 @@
 title: George Washington Slapping Karl Marx In Court
 permalink: /202608141014_george_washington_slapping_karl_marx_in_court/
 tags: [Academic Humor, Economics, Political Propaganda, Societal Critique]
+archived: true
 ---
 
 # George Washington Slapping Karl Marx In Court
