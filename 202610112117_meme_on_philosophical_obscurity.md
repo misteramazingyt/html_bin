@@ -2,6 +2,7 @@
 title: Meme On Philosophical Obscurity
 permalink: /202610112117_meme_on_philosophical_obscurity/
 tags: [Academic Humor, Philosophy, Formal Logic, Irony]
+archived: true
 ---
 
 # Meme On Philosophical Obscurity
