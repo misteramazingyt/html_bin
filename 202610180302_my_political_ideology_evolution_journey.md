@@ -3,6 +3,7 @@ title: My Political Ideology Evolution Journey
 permalink: /202610180302_my_political_ideology_evolution_journey/
 tags: [Political Discourse, Intellectual History, Video Essay Culture, Conceptual Shift]
 bin: ["meme", "from-bookmarks"]
+archived: true
 ---
 
 # My Political Ideology Evolution Journey
