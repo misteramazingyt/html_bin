@@ -2,6 +2,7 @@
 title: Centrist Burden of Finding The Middle Ground
 permalink: /202609240123_centrist_burden_of_finding_the_middle_ground/
 tags: [Political Discourse, Everyday Humor, Feeling Overwhelmed, Irony]
+archived: true
 ---
 
 # Centrist Burden of Finding The Middle Ground
