@@ -2,6 +2,7 @@
 title: Analyzing Character Portrayal In Animated Media
 permalink: /202610040552_analyzing_character_portrayal_in_animated_media/
 tags: [Male Gaze, Irony, Societal Critique, Video Essay Culture]
+archived: true
 ---
 
 # Analyzing Character Portrayal In Animated Media
