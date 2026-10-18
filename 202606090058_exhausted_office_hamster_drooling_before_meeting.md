@@ -2,6 +2,7 @@
 title: Exhausted Office Hamster Drooling Before Meeting
 permalink: /202606090058_exhausted_office_hamster_drooling_before_meeting/
 tags: [Feeling Overwhelmed, Memetic Knowledge, Societal Critique]
+archived: true
 ---
 
 # Exhausted Office Hamster Drooling Before Meeting
