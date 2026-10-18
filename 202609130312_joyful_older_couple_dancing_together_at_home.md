@@ -3,6 +3,7 @@ title: Joyful Older Couple Dancing Together at Home
 permalink: /202609130312_joyful_older_couple_dancing_together_at_home/
 tags: [Everyday Humor, Social Media, Video Essay Culture]
 bin: ["meme", "from-bookmarks"]
+archived: true
 ---
 
 # Joyful Older Couple Dancing Together at Home
