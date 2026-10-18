@@ -2,6 +2,7 @@
 title: Milo Yiannopoulos ICE Mugshot
 permalink: /202608290556_milo_yiannopoulos_ice_mugshot/
 tags: [Political Discourse, Societal Critique, Irony In Politics]
+archived: true
 ---
 
 # Milo Yiannopoulos ICE Mugshot
