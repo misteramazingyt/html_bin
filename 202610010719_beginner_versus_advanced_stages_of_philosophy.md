@@ -2,6 +2,7 @@
 title: Beginner Versus Advanced Stages Of Philosophy
 permalink: /202610010719_beginner_versus_advanced_stages_of_philosophy/
 tags: [Philosophy, Academic Humor, Mental Health, Irony]
+archived: true
 ---
 
 # Beginner Versus Advanced Stages Of Philosophy
