@@ -3,6 +3,7 @@ title: A Friend Request for Hanging Out
 permalink: /202609140322_a_friend_request_for_hanging_out/
 tags: [Companionship, Everyday Humor, Social Media, Memetic Knowledge]
 bin: ["meme", "from-bookmarks"]
+archived: true
 ---
 
 # A Friend Request for Hanging Out
