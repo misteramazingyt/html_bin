@@ -1,6 +1,7 @@
 ---
 title: Cat Singing Old MacDonald
 permalink: /202604120824_cat_singing_old_macdonald/
+archived: true
 ---
 
 # Cat Singing Old MacDonald
