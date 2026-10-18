@@ -2,6 +2,7 @@
 title: Spongebob Complains About Work And Taxes
 permalink: /202609180210_spongebob_complains_about_work_and_taxes/
 tags: [Animated Characters, Video Game Culture, Societal Critique, Everyday Humor]
+archived: true
 ---
 
 # Spongebob Complains About Work And Taxes
