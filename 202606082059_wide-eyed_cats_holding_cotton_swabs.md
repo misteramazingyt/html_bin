@@ -2,6 +2,7 @@
 title: Wide-Eyed Cats Holding Cotton Swabs
 permalink: /202606082059_wide-eyed_cats_holding_cotton_swabs/
 tags: [Memetic Knowledge, Medical Industrial Complex, Feeling Overwhelmed]
+archived: true
 ---
 
 # Wide-Eyed Cats Holding Cotton Swabs
