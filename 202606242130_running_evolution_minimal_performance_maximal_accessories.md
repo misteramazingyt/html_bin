@@ -2,6 +2,7 @@
 title: Running Evolution - Minimal Performance, Maximal Accessories
 permalink: /202606242130_running_evolution_minimal_performance_maximal_accessories/
 tags: [Societal Critique, Conceptual Shift, Economics, Intergenerational Conflict]
+archived: true
 ---
 
 # Running Evolution: Minimal Performance, Maximal Accessories
