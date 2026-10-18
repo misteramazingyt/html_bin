@@ -3,6 +3,7 @@ title: Youth Fashion Trend 'Loser Core' And Bullying
 permalink: /202609140324_youth_fashion_trend_loser_core_and_bullying/
 tags: [Intergenerational Conflict, Everyday Humor, Social Media, Societal Critique]
 bin: ["meme", "from-bookmarks"]
+archived: true
 ---
 
 # Youth Fashion Trend 'Loser Core' And Bullying
