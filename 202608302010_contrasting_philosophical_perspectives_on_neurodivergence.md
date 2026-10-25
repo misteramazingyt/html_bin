@@ -2,6 +2,7 @@
 title: Contrasting Philosophical Perspectives On Neurodivergence
 permalink: /202608302010_contrasting_philosophical_perspectives_on_neurodivergence/
 tags: [Philosophical Concepts, Conceptual Diagram, Memetic Knowledge, Cognitive Processes]
+archived: true
 ---
 
 # Contrasting Philosophical Perspectives On Neurodivergence
