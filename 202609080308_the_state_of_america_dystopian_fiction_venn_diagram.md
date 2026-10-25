@@ -2,6 +2,7 @@
 title: The State Of America Dystopian Fiction Venn Diagram
 permalink: /202609080308_the_state_of_america_dystopian_fiction_venn_diagram/
 tags: [Conceptual Diagram, Societal Critique, Political Discourse, Dystopian Literature]
+archived: true
 ---
 
 # The State Of America Dystopian Fiction Venn Diagram
