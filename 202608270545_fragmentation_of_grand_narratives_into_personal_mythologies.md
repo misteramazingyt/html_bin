@@ -2,6 +2,7 @@
 title: Fragmentation Of Grand Narratives Into Personal Mythologies
 permalink: /202608270545_fragmentation_of_grand_narratives_into_personal_mythologies/
 tags: [Conceptual Shift, Existentialism, Subjectivity Theory, Social Construct]
+archived: true
 ---
 
 # Fragmentation Of Grand Narratives Into Personal Mythologies
