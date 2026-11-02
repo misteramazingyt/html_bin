@@ -2,6 +2,7 @@
 title: Human Productivity Beyond The Profit Motive
 permalink: /202610240218_human_productivity_beyond_the_profit_motive/
 tags: [Economics, Societal Critique, Ethics, Social Construct]
+archived: true
 ---
 
 # Human Productivity Beyond The Profit Motive
