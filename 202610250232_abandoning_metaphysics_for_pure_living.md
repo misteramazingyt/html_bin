@@ -2,6 +2,7 @@
 title: Abandoning Metaphysics For Pure Living
 permalink: /202610250232_abandoning_metaphysics_for_pure_living/
 tags: [Metaphysical Systems, Existentialism, Conceptual Shift, Video Essay Culture]
+archived: true
 ---
 
 # Abandoning Metaphysics For Pure Living
