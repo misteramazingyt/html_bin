@@ -2,6 +2,7 @@
 title: Cat Studies Man-Made Horrors For Comprehension
 permalink: /202610240212_cat_studies_man-made_horrors_for_comprehension/
 tags: [Academic Humor, Societal Critique, Human Understanding, Feeling Overwhelmed]
+archived: true
 ---
 
 # Cat Studies Man-Made Horrors For Comprehension
