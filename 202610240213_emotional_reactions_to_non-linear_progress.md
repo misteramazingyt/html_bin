@@ -2,6 +2,7 @@
 title: Emotional Reactions To Non-Linear Progress
 permalink: /202610240213_emotional_reactions_to_non-linear_progress/
 tags: [Feeling Overwhelmed, Memetic Knowledge, Mental Health, Conceptual Explanation]
+archived: true
 ---
 
 # Emotional Reactions To Non-Linear Progress
