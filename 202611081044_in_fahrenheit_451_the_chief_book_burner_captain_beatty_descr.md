@@ -45,6 +45,7 @@ SCORE ARITHMETIC (within-run percentiles)
 
 TEXT ON THE POST: "In Fahrenheit 451, the chief book-burner, Captain Beatty, describes how reading became obsolete because the public demanded increasingly fast-paced entertainments, and those entertainments slowly corroded their ability to think. “Books cut shorter. Condensations. Digests, tabloids. Everything boils down to the gag, the snap ending. Classics cut to fit fifteen-minute radio shows, then cut again to fill a two-minute…"
 TEXT READ FROM THE IMAGE: "Dylan O'Sullivan @ © t subscribe \] lou &lt;&lt; @DylanoA4 Starting to really understand why a core theme of dystopian novels is that nobody reads Last edited 11:53 AM - Nov 5, 2026 - 28.8K Views Os tl 56 EQ 349 N 30 b"
+very good
 
 ---
 
