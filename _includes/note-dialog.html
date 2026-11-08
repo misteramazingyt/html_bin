@@ -1,0 +1,16 @@
+<dialog id="note-dialog">
+  <h2 id="note-title">Edit notes</h2>
+  <p id="note-sub"></p>
+  <textarea id="note-text" rows="12" aria-label="Notes"></textarea>
+  <p class="note-hint" id="note-hint" hidden>
+    The next automated run reads what you write here. It accepts plain reactions
+    (<i>good</i>, <i>more like this</i>, <i>off-topic</i>, <i>boring</i>) and steering lines:
+    <code>more: Simone Weil</code>, <code>less: stock photos</code>,
+    <code>search: accelerationism meme</code>.
+  </p>
+  <div class="dialog-actions">
+    <span class="status" id="note-status"></span>
+    <button class="btn" id="note-cancel" type="button">Cancel</button>
+    <button class="btn btn-primary" id="note-ok" type="button">Save</button>
+  </div>
+</dialog>

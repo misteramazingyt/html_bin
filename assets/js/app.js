@@ -552,6 +552,10 @@
     var n = document.getElementById("sel-count");
     if (n) n.textContent = selected.length;
     if (bar) bar.hidden = selected.length === 0;
+    ["sel-editnote", "sel-appendnote"].forEach(function (id) {
+      var b = document.getElementById(id);
+      if (b) b.hidden = selected.length !== 1;     // notes are per page
+    });
   }
 
   function onItemClick(e) {
@@ -1133,7 +1137,7 @@
   }
 
   function setBusy(on) {
-    ["sel-tag", "sel-untag", "sel-archive", "sel-delete"].forEach(function (id) {
+    ["sel-tag", "sel-untag", "sel-archive", "sel-delete", "sel-editnote", "sel-appendnote"].forEach(function (id) {
       var b = document.getElementById(id);
       if (b) b.disabled = on;
     });
@@ -1323,6 +1327,89 @@
     });
   }
 
+  /* ---------- note dialog: Edit note / Append note from the selection bar ----------
+   * Works on exactly one selected page, in either view (details view hides
+   * the per-card editor). Append re-reads the file right before writing and
+   * adds a line break + the new text, so it never clobbers an edit made
+   * elsewhere. On automated pages the dialog says that notes steer the
+   * next run (modules/htmlBinAuto reads the lines a person added).
+   */
+  function openNoteDialog(mode) {
+    if (!getToken()) { openDialog(); return; }
+    var items = selectedItems();
+    if (items.length !== 1) return;
+    var it = items[0], path = it.dataset.path;
+    var dlg = document.getElementById("note-dialog");
+    if (!dlg) return;
+    var ta = document.getElementById("note-text");
+    var ok = document.getElementById("note-ok");
+    var cancel = document.getElementById("note-cancel");
+    var st = document.getElementById("note-status");
+    var a = it.querySelector(".item-title a");
+    document.getElementById("note-title").textContent =
+      mode === "append" ? "Append to notes" : "Edit notes";
+    document.getElementById("note-sub").textContent = a ? a.textContent.trim() : path;
+    document.getElementById("note-hint").hidden = !listOf(it, "auto").some(function (t) {
+      return t.toLowerCase() === "automated";
+    });
+    ta.value = "";
+    ta.placeholder = mode === "append" ? "Added on a new line at the end of the notes" : "";
+    setStatus(st, "");
+
+    function finish() {
+      ok.removeEventListener("click", onOk);
+      cancel.removeEventListener("click", onCancel);
+      ta.removeEventListener("keydown", onKey);
+      dlg.removeEventListener("close", finish);
+      if (dlg.open) dlg.close();
+    }
+    function onCancel(e) { e.preventDefault(); finish(); }
+    function onKey(e) { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) onOk(e); }
+    function onOk(e) {
+      e.preventDefault();
+      if (ok.disabled) return;
+      var text = ta.value;
+      if (mode === "append" && !text.trim()) { finish(); return; }
+      ok.disabled = true;
+      setStatus(st, "saving…");
+      ghGet(path).then(function (j) {
+        var md = b64decode(j.content);
+        var cur = currentNotes(md);
+        var next = mode === "append" ? (cur ? cur + "\n" + text.trim() : text.trim()) : text;
+        return ghPut(path, replaceNotes(md, next), j.sha,
+                     (mode === "append" ? "Append note: " : "Update notes: ") + path)
+          .then(function () { return next; });
+      }).then(function (next) {
+        var d = it.querySelector(".notes");
+        if (d) d.textContent = next.trim();
+        setStatus(it.querySelector(".item-actions .status"), "saved — live in ~1 min", "ok");
+        finish();
+      }).catch(function (err) {
+        setStatus(st, err.message, "err");
+      }).then(function () { ok.disabled = false; });
+    }
+
+    ok.addEventListener("click", onOk);
+    cancel.addEventListener("click", onCancel);
+    ta.addEventListener("keydown", onKey);
+    dlg.addEventListener("close", finish);
+    dlg.showModal();
+
+    if (mode === "edit") {
+      ok.disabled = true;
+      setStatus(st, "loading…");
+      ghGet(path).then(function (j) {
+        ta.value = currentNotes(b64decode(j.content));
+        ok.disabled = false;
+        setStatus(st, "");
+        ta.focus();
+      }).catch(function (err) { setStatus(st, err.message, "err"); });
+    } else {
+      ok.disabled = false;
+      ta.focus();
+    }
+  }
+
   /* ---------- boot ---------- */
 
   consumeCallback();
@@ -1436,7 +1523,9 @@
 
     var m = { "sel-tag": bulkAddTags, "sel-untag": bulkRemoveTags,
               "sel-archive": function () { bulkArchive(!archiveMode); },
-              "sel-delete": bulkDelete, "sel-clear": clearSelection };
+              "sel-delete": bulkDelete, "sel-clear": clearSelection,
+              "sel-editnote": function () { openNoteDialog("edit"); },
+              "sel-appendnote": function () { openNoteDialog("append"); } };
     Object.keys(m).forEach(function (id) {
       var b = document.getElementById(id);
       if (b) b.addEventListener("click", m[id]);

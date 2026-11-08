@@ -586,3 +586,15 @@ body.dragging-chip .filter-group {
 @media (max-width: 640px) {
   .modenav .btn { padding-left: 8px; padding-right: 8px; }
 }
+
+/* ---------- note dialog (selection bar: Edit note / Append note) ---------- */
+#note-dialog { width: min(640px, calc(100vw - 32px)); }
+#note-text {
+  width: 100%; box-sizing: border-box; min-height: 200px; resize: vertical;
+  font: inherit; font-size: .88rem; line-height: 1.5; padding: 10px 12px; margin: 0 0 12px;
+  background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 8px;
+}
+#note-text:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+.note-hint { font-size: .8rem !important; }
+#note-dialog .dialog-actions { align-items: center; }
+#note-dialog .dialog-actions .status { margin-right: auto; }
