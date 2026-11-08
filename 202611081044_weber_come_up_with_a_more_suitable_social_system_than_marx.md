@@ -44,6 +44,8 @@ SCORE ARITHMETIC (within-run percentiles)
 
 TEXT ON THE POST: "This may contain: a man with a beard sitting in front of a sign that says, come up with a more suitable social system than marx did"
 TEXT READ FROM THE IMAGE: "COMES UP WITH, /AMORE SUSTAINABLE SOCIETAL Ecosys TEM THAN MARX DID NOVONE LISTENED TO HIM made on imgur"
+this meme blows; I want more memes like this: https://www.pinterest.com/pin/803118546097022815/
+https://www.pinterest.com/pin/1080793610589885571/
 
 ---
 
