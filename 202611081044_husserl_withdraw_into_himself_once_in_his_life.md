@@ -1,6 +1,6 @@
 ---
-title: "This May Contain an Old Man With Glasses and a"
-permalink: /202611081044_this_may_contain_an_old_man_with_glasses_and_a/
+title: "Husserl: Withdraw Into Himself Once in His Life"
+permalink: /202611081044_husserl_withdraw_into_himself_once_in_his_life/
 tags: ["Continental Philosophy", "Pinterest", "automated"]
 automated: true
 auto_platform: "Pinterest"
@@ -9,9 +9,9 @@ auto_score: 0.75
 auto_run: "20261108-1042"
 ---
 
-# This May Contain an Old Man With Glasses and a
+# Husserl: Withdraw Into Himself Once in His Life
 
-<img src="https://i.pinimg.com/originals/b0/f7/b4/b0f7b49da8cbbe739709c56213fa76a2.jpg" alt="This May Contain an Old Man With Glasses and a" width="640">
+<img src="https://i.pinimg.com/originals/b0/f7/b4/b0f7b49da8cbbe739709c56213fa76a2.jpg" alt="Husserl: Withdraw Into Himself Once in His Life" width="640">
 
 ## Notes [^1]
 

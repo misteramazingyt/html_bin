@@ -1,6 +1,6 @@
 ---
-title: "This May Contain a Man With a Beard Sitting in"
-permalink: /202611081044_this_may_contain_a_man_with_a_beard_sitting_in/
+title: "Weber: Come Up With a More Suitable Social System Than Marx"
+permalink: /202611081044_weber_come_up_with_a_more_suitable_social_system_than_marx/
 tags: ["Sociology", "Pinterest", "automated"]
 automated: true
 auto_platform: "Pinterest"
@@ -9,9 +9,9 @@ auto_score: 0.81
 auto_run: "20261108-1042"
 ---
 
-# This May Contain a Man With a Beard Sitting in
+# Weber: Come Up With a More Suitable Social System Than Marx
 
-<img src="https://i.pinimg.com/originals/b3/0e/72/b30e724acdd6f059b145018af83d3c22.png" alt="This May Contain a Man With a Beard Sitting in" width="640">
+<img src="https://i.pinimg.com/originals/b3/0e/72/b30e724acdd6f059b145018af83d3c22.png" alt="Weber: Come Up With a More Suitable Social System Than Marx" width="640">
 
 ## Notes [^1]
 
