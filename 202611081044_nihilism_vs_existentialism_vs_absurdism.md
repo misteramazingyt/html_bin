@@ -45,6 +45,7 @@ SCORE ARITHMETIC (within-run percentiles)
 
 TEXT ON THE POST: "Nihilism vs. Existentialism vs. Absurdism -- The birth of Modernity’s Meaning Crisis and two responses to it"
 TEXT READ FROM THE IMAGE: "NIHILISM ZS ABSURDISM , &lt;“ = EXISTENTIALISM"
+this is also just a thumbnail, not a meme
 
 ---
 
