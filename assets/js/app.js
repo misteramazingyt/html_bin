@@ -1318,13 +1318,69 @@
         return ghPut(path, replaceNotes(md, textarea.value), j.sha, "Update notes: " + path);
       }).then(function () {
         setStatus(status, "saved — live in ~1 min", "ok");
-        if (display) display.textContent = textarea.value.trim();
+        if (display) { display.textContent = textarea.value.trim(); display.classList.add("notes-pending"); }
+        rememberNotes(path, textarea.value);
         editor.classList.remove("open");
         editBtn.style.display = "";
       }).catch(function (e) {
         setStatus(status, e.message, "err");
       }).then(function () { saveBtn.disabled = false; });
     });
+  }
+
+  /* ---------- notes saved but not yet rebuilt ----------
+   * Same problem as tag categories: the commit lands at once, but Pages takes
+   * a minute to rebuild and browsers then serve the cached page for up to ten
+   * more, so a reload shows the old notes and the save looks lost. Saved notes
+   * are kept here for 20 minutes and drawn over the stale render until the
+   * rebuilt page carries them, at which point the entry is dropped.
+   */
+
+  var NOTES_PENDING_KEY = "html_bin.notes_pending";
+
+  function readPendingNotes() {
+    try {
+      var o = JSON.parse(localStorage.getItem(NOTES_PENDING_KEY) || "{}");
+      var now = Date.now(), out = {};
+      Object.keys(o).forEach(function (k) {
+        if (now - (o[k].at || 0) < PENDING_TTL) out[k] = o[k];
+      });
+      localStorage.setItem(NOTES_PENDING_KEY, JSON.stringify(out));
+      return out;
+    } catch (e) { return {}; }
+  }
+
+  function rememberNotes(path, notes) {
+    var o = readPendingNotes();
+    o[path] = { notes: notes.trim(), at: Date.now() };
+    try { localStorage.setItem(NOTES_PENDING_KEY, JSON.stringify(o)); } catch (e) { /* full or blocked */ }
+  }
+
+  // Rendered notes have been through markdown + strip_html; compare loosely.
+  function notesKey(s) {
+    return String(s || "").replace(/\\([\\`*_\[\]#])/g, "$1")
+      .replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&")
+      .replace(/\s+/g, " ").trim();
+  }
+
+  function applyPendingNotes() {
+    var pend = readPendingNotes(), changed = false;
+    Object.keys(pend).forEach(function (path) {
+      var root = document.querySelector('[data-path="' + CSS.escape(path) + '"]');
+      if (!root) return;
+      var d = root.querySelector(".notes");
+      if (!d) return;
+      if (notesKey(d.textContent) === notesKey(pend[path].notes)) {
+        delete pend[path]; changed = true;          // the rebuild caught up
+        return;
+      }
+      d.textContent = pend[path].notes;
+      d.classList.add("notes-pending");
+      d.title = "Saved — the published page is still rebuilding";
+    });
+    if (changed) {
+      try { localStorage.setItem(NOTES_PENDING_KEY, JSON.stringify(pend)); } catch (e) { /* ignore */ }
+    }
   }
 
   /* ---------- note dialog: Edit note / Append note from the selection bar ----------
@@ -1381,8 +1437,10 @@
           .then(function () { return next; });
       }).then(function (next) {
         var d = it.querySelector(".notes");
-        if (d) d.textContent = next.trim();
+        if (d) { d.textContent = next.trim(); d.classList.add("notes-pending"); }
+        rememberNotes(path, next);
         setStatus(it.querySelector(".item-actions .status"), "saved — live in ~1 min", "ok");
+        setStatus(document.getElementById("sel-status"), "Note saved — live in ~1 min", "ok");
         finish();
       }).catch(function (err) {
         setStatus(st, err.message, "err");
@@ -1532,6 +1590,7 @@
     });
 
     document.querySelectorAll("[data-path]").forEach(wireEditor);
+    applyPendingNotes();
     applyFilter();
   });
 })();

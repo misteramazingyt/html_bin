@@ -598,3 +598,6 @@ body.dragging-chip .filter-group {
 .note-hint { font-size: .8rem !important; }
 #note-dialog .dialog-actions { align-items: center; }
 #note-dialog .dialog-actions .status { margin-right: auto; }
+
+/* notes saved locally but the published page has not rebuilt yet */
+.notes.notes-pending { border-left: 2px solid var(--accent); padding-left: 8px; }
