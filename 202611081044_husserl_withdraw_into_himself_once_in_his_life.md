@@ -44,6 +44,7 @@ SCORE ARITHMETIC (within-run percentiles)
 
 TEXT ON THE POST: "This may contain: an old man with glasses and a beard in front of a quote from edward husser"
 TEXT READ FROM THE IMAGE: "WWW.THEARCANEFRONT.COM EDMUND HUSSERL ",,.Anyone who seriously intends to become a philosopher must ‘once in his life’ withdraw into himself and attempt — within himself — to overthrow and build anew all the sciences that, up to then, he has been accepting...It must arise as His wisdom, as his…"
+good, more quite images like this with these kinds of quotes; more about labor, social life, technology, self-transformation through such thigs, etc.
 
 ---
 
