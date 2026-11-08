@@ -44,6 +44,7 @@ SCORE ARITHMETIC (within-run percentiles)
 0.40×success 0.94 + 0.30×domain 0.87 + 0.20×traction 0.97 + 0.10×legibility 0.31 = 0.87
 
 TEXT ON THE POST: "Modern Sisyphus: The Absurdity of the Corporate World -- By Unwana Johnson"
+this is not a meme at all
 
 ---
 
