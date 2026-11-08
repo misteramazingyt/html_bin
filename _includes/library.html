@@ -1,0 +1,252 @@
+{%- comment -%}
+  The page grid, shared by the library (/) and the automated picks (/automated/).
+  include.mode: "library" (default) hides automated pages; "automated" shows only them.
+{%- endcomment -%}
+
+{% if include.mode == "automated" %}
+  {% assign note_pages = site.pages
+     | where_exp: "p", "p.automated == true"
+     | sort: "name"
+     | reverse %}
+{% else %}
+  {% assign note_pages = site.pages
+     | where_exp: "p", "p.url != '/'"
+     | where_exp: "p", "p.title"
+     | where_exp: "p", "p.automated != true"
+     | sort: "name"
+     | reverse %}
+{% endif %}
+
+{%- comment -%}
+  Two tag families, kept in separate front matter keys so they can never be
+  confused: `tags` is machine-written by the capture pipeline, `bin` is the
+  user's own. Only `bin` is editable from this page.
+{%- endcomment -%}
+
+{% assign auto_all = "" | split: "" %}
+{% assign bin_all = "" | split: "" %}
+{% for p in note_pages %}
+  {% for t in p.tags %}{% assign auto_all = auto_all | push: t %}{% endfor %}
+  {% for t in p.bin %}{% assign bin_all = bin_all | push: t %}{% endfor %}
+{% endfor %}
+{% assign auto_uniq = auto_all | uniq | sort %}
+{% assign bin_uniq = bin_all | uniq | sort %}
+
+{% include masthead.html show_search=true count=note_pages.size show_view=true mode=include.mode %}
+
+<div class="wrap">
+
+  {%- comment -%}
+    Tags split across two rows by category. _data/tag_meta.yml names only the
+    metadata ones, so anything unlisted falls through to Content and a new tag
+    needs no entry. Matching is case-insensitive, which is why the list is
+    downcased once here rather than compared as written.
+  {%- endcomment -%}
+  {% assign meta_names = site.data.tag_meta.meta %}
+  {% assign meta_lc = "" | split: "" %}
+  {% for m in meta_names %}
+    {% assign ml = m | downcase %}
+    {% assign meta_lc = meta_lc | push: ml %}
+  {% endfor %}
+
+  {% assign hide_names = site.data.tag_meta.hidden_by_default %}
+  {% assign hide_lc = "" | split: "" %}
+  {% for h in hide_names %}
+    {% assign hl = h | downcase %}
+    {% assign hide_lc = hide_lc | push: hl %}
+  {% endfor %}
+
+  {% assign content_tags = "" | split: "" %}
+  {% assign metadata_tags = "" | split: "" %}
+  {% for t in bin_uniq %}
+    {% assign tl = t | downcase %}
+    {% if meta_lc contains tl %}
+      {% assign metadata_tags = metadata_tags | push: t %}
+    {% else %}
+      {% assign content_tags = content_tags | push: t %}
+    {% endif %}
+  {% endfor %}
+
+  {% if include.mode == "automated" %}
+    {% assign dom_all = "" | split: "" %}
+    {% assign plat_all = "" | split: "" %}
+    {% for p in note_pages %}
+      {% if p.auto_domain %}{% assign dom_all = dom_all | push: p.auto_domain %}{% endif %}
+      {% if p.auto_platform %}{% assign plat_all = plat_all | push: p.auto_platform %}{% endif %}
+    {% endfor %}
+    {% assign latest = note_pages | map: "auto_run" | compact | sort | last %}
+    <section class="auto-intro">
+      <p><b>Picked by machine, not by hand.</b> Each run scrolls Substack, X and Pinterest,
+      scores every image against the TikTok posts that already did well and against six
+      domains (continental philosophy, philosophy of technology, sociology, literary &amp;
+      critical theory, mysticism, political theory), and publishes the best few.
+      Open any pick to read why it was chosen.</p>
+      {% if latest %}<p class="auto-meta">Latest run {{ latest }} · {{ note_pages.size }} picks so far</p>{% endif %}
+    </section>
+    <div class="filters auto-filters">
+      <div class="filter-group">
+        <span class="filter-label">Domain</span>
+        {% assign dom_uniq = dom_all | uniq | sort %}
+        {% for t in dom_uniq %}
+          {% assign n = dom_all | where_exp: "x", "x == t" | size %}
+          <button class="chip chip-auto" type="button" data-filter="auto" data-tag="{{ t | escape }}">{{ t }}<span class="chip-n">{{ n }}</span></button>
+        {% endfor %}
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Source</span>
+        {% assign plat_uniq = plat_all | uniq | sort %}
+        {% for t in plat_uniq %}
+          {% assign n = plat_all | where_exp: "x", "x == t" | size %}
+          <button class="chip chip-auto" type="button" data-filter="auto" data-tag="{{ t | escape }}">{{ t }}<span class="chip-n">{{ n }}</span></button>
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+
+  <div class="filters" id="filters">
+    {% if bin_uniq.size > 0 %}
+      <div class="filter-group" id="group-content" data-cat="content">
+        <span class="filter-label">Content</span>
+        {% for t in content_tags %}
+          {% assign n = bin_all | where_exp: "x", "x == t" | size %}
+          {% assign tlc = t | downcase %}
+          <button class="chip chip-bin" type="button" draggable="true"
+                  data-filter="bin" data-cat="content" data-tag="{{ t | escape }}"
+                  {% if hide_lc contains tlc %}data-hide-default="true"{% endif %}>
+            {{ t }}<span class="chip-n">{{ n }}</span>
+          </button>
+        {% endfor %}
+      </div>
+
+      <div class="filter-group" id="group-meta" data-cat="meta">
+        <span class="filter-label">Metadata</span>
+        {% for t in metadata_tags %}
+          {% assign n = bin_all | where_exp: "x", "x == t" | size %}
+          {% assign tlc = t | downcase %}
+          <button class="chip chip-bin" type="button" draggable="true"
+                  data-filter="bin" data-cat="meta" data-tag="{{ t | escape }}"
+                  {% if hide_lc contains tlc %}data-hide-default="true"{% endif %}>
+            {{ t }}<span class="chip-n">{{ n }}</span>
+          </button>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <button class="btn btn-sm" id="clear-filters" type="button" hidden>Clear filters</button>
+  </div>
+
+  <div class="selbar" id="selbar" hidden>
+    <span class="selbar-count"><b id="sel-count">0</b> selected</span>
+    <button class="btn btn-sm btn-primary" id="sel-tag" type="button">Add tags…</button>
+    <button class="btn btn-sm" id="sel-untag" type="button">Remove tags…</button>
+    <button class="btn btn-sm" id="sel-archive" type="button">Archive…</button>
+    <button class="btn btn-sm btn-danger" id="sel-delete" type="button">Delete…</button>
+    <button class="btn btn-sm" id="sel-clear" type="button">Clear selection</button>
+    <span class="status" id="sel-status"></span>
+  </div>
+
+  <div class="grid view-cards" id="grid">
+  {% for p in note_pages %}
+
+    {% assign raw = p.content %}
+    {% assign is_html = false %}
+    {% if raw contains '<h2' %}{% assign is_html = true %}{% endif %}
+
+    {% if is_html %}
+      {% assign pre = raw | split: '<h2' | first %}
+    {% else %}
+      {% assign pre = raw | split: '## Notes' | first %}
+    {% endif %}
+
+    {% assign media_url = '' %}
+    {% assign media_kind = '' %}
+    {% if pre contains 'src="' %}
+      {% assign media_url = pre | split: 'src="' | last | split: '"' | first %}
+      {% if pre contains '<video' %}
+        {% assign media_kind = 'video' %}
+      {% else %}
+        {% assign media_kind = 'image' %}
+      {% endif %}
+    {% endif %}
+
+    {% assign notes_text = '' %}
+    {% if is_html %}
+      {% if raw contains '</h2>' %}
+        {% assign after = raw | split: '</h2>' | last %}
+        {% if after contains '<hr' %}
+          {% assign after = after | split: '<hr' | first %}
+        {% elsif after contains 'class="footnotes"' %}
+          {% assign after = after | split: '<div class="footnotes"' | first %}
+        {% endif %}
+        {% assign notes_text = after | strip_html | strip %}
+      {% endif %}
+    {% else %}
+      {% if raw contains '## Notes' %}
+        {% assign after = raw | split: '## Notes' | last | remove_first: ' [^1]' %}
+        {% assign notes_text = after | split: '
+---' | first | strip %}
+      {% endif %}
+    {% endif %}
+
+    {% assign stamp = p.name | split: '_' | first %}
+    {% assign yr = stamp | slice: 0, 4 %}
+    {% assign mo = stamp | slice: 4, 2 %}
+    {% assign dy = stamp | slice: 6, 2 %}
+
+    <article class="item" data-path="{{ p.path }}"
+             data-archived="{% if p.archived %}true{% else %}false{% endif %}"
+             data-auto="{{ p.tags | join: '|' | escape }}"
+             data-bin="{{ p.bin | join: '|' | escape }}"
+             data-search="{{ p.title | downcase | escape }} {{ notes_text | downcase | escape }} {{ p.tags | join: ' ' | downcase | escape }} {{ p.bin | join: ' ' | downcase | escape }}">
+
+      <div class="item-media">
+        {% if media_url != '' %}
+          {% if media_kind == 'video' %}
+            <video controls preload="metadata"><source src="{{ media_url }}"></video>
+            <div class="thumb thumb-video" aria-hidden="true">▶</div>
+          {% else %}
+            <img src="{{ media_url }}" alt="{{ p.title | escape }}" loading="lazy">
+          {% endif %}
+        {% else %}
+          <div class="missing">No media</div>
+          <div class="thumb thumb-none" aria-hidden="true">—</div>
+        {% endif %}
+      </div>
+
+      <h2 class="item-title">
+        <a href="{{ p.permalink | default: p.url | relative_url }}">{{ p.title }}</a>
+      </h2>
+
+      <div class="item-auto tag-row">
+        {% for t in p.tags %}<span class="tag tag-auto">{{ t }}</span>{% endfor %}
+      </div>
+
+      <div class="item-bin tag-row">
+        {% for t in p.bin %}<span class="tag tag-bin">{{ t }}</span>{% endfor %}
+      </div>
+
+      <div class="item-date">{% if yr != '' %}{{ yr }}-{{ mo }}-{{ dy }}{% endif %}{% if p.automated %} · {{ p.auto_platform }} · <span class="auto-score" title="Composite score: within-run percentiles of success, domain, traction, legibility">{{ p.auto_score }}</span>{% endif %}</div>
+
+      <p class="notes">{{ notes_text }}</p>
+
+      <div class="editor">
+        <textarea aria-label="Notes" placeholder="Write notes… (markdown allowed)"></textarea>
+        <div class="editor-row">
+          <button class="btn btn-primary btn-sm js-save" type="button">Save</button>
+          <button class="btn btn-sm js-cancel" type="button">Cancel</button>
+        </div>
+      </div>
+
+      <div class="item-actions">
+        <button class="btn btn-sm js-edit" type="button">Edit notes</button>
+        <span class="status"></span>
+      </div>
+    </article>
+
+  {% endfor %}
+  </div>
+
+  <div class="empty" id="no-results" hidden>Nothing matches those filters.</div>
+  {% if note_pages.size == 0 %}<div class="empty">Nothing here yet.</div>{% endif %}
+</div>
+

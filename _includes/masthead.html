@@ -13,6 +13,11 @@
         <button class="btn btn-sm js-view" type="button" data-view="details" title="Details view">☰</button>
       </div>
     {% endif %}
+    {%- comment -%} Library = hand-saved pages; Automated = machine picks (modules/htmlBinAuto). {%- endcomment -%}
+    <nav class="modenav" aria-label="Section">
+      <a class="btn btn-sm{% if include.mode != 'automated' %} active{% endif %}" href="{{ '/' | relative_url }}" title="Pages you saved">Library</a>
+      <a class="btn btn-sm{% if include.mode == 'automated' %} active{% endif %}" href="{{ '/automated/' | relative_url }}" title="Images picked automatically, with the reasons in their notes">Automated</a>
+    </nav>
     <button class="btn" id="theme-toggle" title="Toggle light / dark" aria-label="Toggle light or dark theme">◐</button>
     <span class="whoami" id="whoami" hidden></span>
     <button class="btn" id="signin-btn" title="Sign in with GitHub to edit" hidden>Sign in</button>

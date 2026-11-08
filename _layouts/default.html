@@ -10,7 +10,7 @@
 </head>
 <body>
 
-{% include masthead.html %}
+{% if page.automated %}{% include masthead.html mode="automated" %}{% else %}{% include masthead.html %}{% endif %}
 
 {%- comment -%}
   Pages are machine-generated with a fixed shape, so the source is parsed into
@@ -74,6 +74,11 @@
 <main class="page" data-path="{{ page.path }}">
   <h1>{{ page.title }}</h1>
 
+  {% if page.automated %}
+    <p class="auto-badge">Automated pick · {{ page.auto_platform }} · {{ page.auto_domain }} ·
+      score <b>{{ page.auto_score }}</b> · run {{ page.auto_run }}. The notes below say why it was chosen.</p>
+  {% endif %}
+
   {% if page.bin and page.bin.size > 0 %}
     <div class="tag-row">
       {% for t in page.bin %}<span class="tag tag-bin">{{ t }}</span>{% endfor %}
@@ -117,7 +122,11 @@
     <div class="footnotes"><a href="{{ source_url }}" target="_blank" rel="noopener">{{ source_url }}</a></div>
   {% endif %}
 
-  <a class="backlink" href="{{ '/' | relative_url }}">← all pages</a>
+  {% if page.automated %}
+    <a class="backlink" href="{{ '/automated/' | relative_url }}">← all automated picks</a>
+  {% else %}
+    <a class="backlink" href="{{ '/' | relative_url }}">← all pages</a>
+  {% endif %}
 </main>
 
 {% include token-dialog.html %}
