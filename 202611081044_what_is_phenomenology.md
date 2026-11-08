@@ -44,6 +44,7 @@ SCORE ARITHMETIC (within-run percentiles)
 0.40×success 0.86 + 0.30×domain 0.99 + 0.20×traction 0.78 + 0.10×legibility 0.71 = 0.87
 
 TEXT ON THE POST: "What is Phenomenology? -- The Philosophy of Husserl and Heidegger"
+this is only a thumbnail, not a meme
 
 ---
 
